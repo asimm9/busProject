@@ -1,5 +1,6 @@
 package org.example.managers;
 
+import org.example.helper.dao.UserDAO;
 import org.example.models.UserModel;
 
 import java.util.ArrayList;
@@ -8,9 +9,8 @@ import java.util.List;
 public class UserManager {
 
     private static UserManager instance;
-
     private final List<UserModel> userList;
-
+    private UserDAO userDAO = new UserDAO();
     private UserManager() {
         this.userList = new ArrayList<>();
     }
@@ -24,25 +24,15 @@ public class UserManager {
 
     public boolean registerUser(UserModel user) {
         // Aynı ID'ye sahip kullanıcı varsa kayıt etme
-        for (UserModel u : userList) {
-            if (u.getId().equals(user.getId())) {
-                return false; // Kullanıcı zaten var
-            }
-        }
-        userList.add(user);
-        return true;
+
+        return userDAO.createUser(user);
     }
 
     public UserModel login(String username, String password) {
-        for (UserModel u : userList) {
-            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-                return u;
-            }
-        }
-        return null;
+        return userDAO.findByUsernameAndPassword(username, password);
     }
 
-    public List<UserModel> getAllUsers() {
+    /*public List<UserModel> getAllUsers() {
         return new ArrayList<>(userList);
     }
 
@@ -61,5 +51,5 @@ public class UserManager {
 
     public void clearUsers() {
         userList.clear();
-    }
+    }*/
 }

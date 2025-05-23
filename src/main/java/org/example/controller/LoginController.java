@@ -1,11 +1,12 @@
-package org.example.views;
+package org.example.controller;
 import org.example.managers.UserManager;
 import org.example.models.UserModel;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.example.managers.UserManager;
+import java.util.UUID;
+
 
 public class LoginController {
 
@@ -36,13 +37,14 @@ public class LoginController {
     private void onRegister() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+        String email = "asimisik9@gmail.com";
 
         // Yeni UserModel oluşturmalısın
         UserModel user = new UserModel();
         user.setUsername(username);
         user.setPassword(password);
-        // id ve email gibi diğer alanları da ayarlaman gerekir, örneğin id oluştur
-        user.setId(java.util.UUID.randomUUID().toString());
+        user.setEmail(email);
+        user.setId(2);
 
         boolean success = userManager.registerUser(user);
         if (success) {

@@ -4,57 +4,67 @@ import java.sql.Statement;
 
 public class DatabaseInitializer {
 
-        public static void initialize(){
-            try(Connection connection = DatabaseConnector.connect(); Statement statement = connection.createStatement()) {
-                statement.execute("CREATE TABLE IF NOT EXISTS users (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "username TEXT NOT NULL," +
-                        "email TEXT NOT NULL," +
-                        "password TEXT NOT NULL ");
+    public static void initialize(){
+        try(Connection connection = DatabaseConnector.connect(); Statement statement = connection.createStatement()) {
+            // USERS TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS users (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "username TEXT NOT NULL, " +
+                    "email TEXT NOT NULL, " +
+                    "password TEXT NOT NULL " +
+                    ");"
+            );
 
-                statement.execute(
-                        "CREATE TABLE IF NOT EXISTS buses (\n" +
-                                "    bus_id INTEGER PRIMARY KEY,\n" +
-                                "    bus_type TEXT,\n" +
-                                "    total_seats INTEGER,\n" +
-                                "    plate_number INTEGER\n" +
-                                ");"
-                );
+            // BUSES TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS buses (" +
+                    "bus_id INTEGER PRIMARY KEY, " +
+                    "bus_type TEXT, " +
+                    "total_seats INTEGER, " +
+                    "plate_number INTEGER " +
+                    ");"
+            );
 
-                statement.execute("" +
-                        "CREATE TABLE IF NOT EXISTS trips (\n" +
-                        "    trip_id INTEGER PRIMARY KEY,\n" +
-                        "    origin TEXT NOT NULL,\n" +
-                        "    destination TEXT NOT NULL,\n" +
-                        "    departure_time TEXT NOT NULL,\n" +
-                        "    bus_id INTEGER,\n" +
-                        "    FOREIGN KEY(bus_id) ");
+            // TRIPS TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS trips (" +
+                    "trip_id INTEGER PRIMARY KEY, " +
+                    "origin TEXT NOT NULL, " +
+                    "destination TEXT NOT NULL, " +
+                    "departure_time TEXT NOT NULL, " +
+                    "bus_id INTEGER, " +
+                    "FOREIGN KEY(bus_id) REFERENCES buses(bus_id)" +
+                    ");"
+            );
 
-                statement.execute("CREATE TABLE IF NOT EXISTS seats (\n" +
-                        "    seat_id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                        "    seat_number INTEGER,\n" +
-                        "    row_number INTEGER,\n" +
-                        "    column_number INTEGER,\n" +
-                        "    is_reserved INTEGER,\n" +
-                        "    passenger_name TEXT,\n" +
-                        "    trip_id INTEGER,\n" +
-                        "    FOREIGN KEY(trip_id) REFERENCES trips(trip_id)\n" +
-                        ");");
+            // SEATS TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS seats (" +
+                    "seat_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "seat_number INTEGER, " +
+                    "row_number INTEGER, " +
+                    "column_number INTEGER, " +
+                    "is_reserved INTEGER, " +
+                    "passenger_name TEXT, " +
+                    "trip_id INTEGER, " +
+                    "FOREIGN KEY(trip_id) REFERENCES trips(trip_id)" +
+                    ");"
+            );
 
-                statement.execute("CREATE TABLE IF NOT EXISTS reservations (\n" +
-                        "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                        "    user_id TEXT,\n" +
-                        "    trip_id INTEGER,\n" +
-                        "    seat_id INTEGER,\n" +
-                        "    reservation_time TEXT,\n" +
-                        "    FOREIGN KEY(user_id) REFERENCES users(id),\n" +
-                        "    FOREIGN KEY(trip_id) REFERENCES trips(trip_id),\n" +
-                        "    FOREIGN KEY(seat_id) REFERENCES seats(seat_id)\n" +
-                        ");");
+            // RESERVATIONS TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS reservations (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "user_id INTEGER, " +
+                    "trip_id INTEGER, " +
+                    "seat_id INTEGER, " +
+                    "reservation_time TEXT, " +
+                    "FOREIGN KEY(user_id) REFERENCES users(id), " +
+                    "FOREIGN KEY(trip_id) REFERENCES trips(trip_id), " +
+                    "FOREIGN KEY(seat_id) REFERENCES seats(seat_id)" +
+                    ");"
+            );
 
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            System.out.println("Database baglandiiiiiii");
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Database olmadiiiiiii");
         }
+    }
 }
