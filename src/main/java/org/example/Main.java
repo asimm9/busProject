@@ -1,10 +1,12 @@
 package org.example;
 
+import javafx.application.Application;
+import org.example.views.LoginApp;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        LoginForm loginForm = new LoginForm();
-        System.out.println("hello asım");
+        Application.launch(LoginApp.class, args);
     }
 }
