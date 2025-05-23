@@ -1,0 +1,40 @@
+.grid-pane {
+    -fx-background-color: linear-gradient(to bottom right, #3A6186, #89253E);
+    -fx-padding: 30;
+    -fx-hgap: 15;
+    -fx-vgap: 15;
+    -fx-alignment: center;
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: white;
+    -fx-text-fill: #89253E;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #f3f3f3;
+}
+
+#statusLabel {
+    -fx-text-fill: #FF6F61;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
