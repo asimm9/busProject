@@ -11,7 +11,7 @@ public class ReservationDAO {
     public boolean createReservation(Reservation reservation) {
         String sql = "INSERT INTO reservations(user_id, trip_id, seat_id, reservation_time) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, reservation.getUser().getId());
+            stmt.setInt(1, reservation.getUser().getId());
             stmt.setInt(2, reservation.getTrip().getTripID());
             stmt.setInt(3, reservation.getSeat().getSeatNumber()); // seat_id varsa özel id al
             stmt.setString(4, reservation.getReservationDateTime().toString());

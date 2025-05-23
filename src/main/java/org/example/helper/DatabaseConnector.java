@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class DatabaseConnector {
 
-    private static final String DB_URL = "jdbc:sqlite:rezervasyon.db";
+    private static final String DB_URL = "jdbc:sqlite:D:\\AsiM\\yazilim\\busProject\\rezervasyon.db";
 
     public static Connection connect() {
         try {
