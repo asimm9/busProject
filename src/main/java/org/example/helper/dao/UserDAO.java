@@ -10,12 +10,13 @@ import java.sql.SQLException;
 
 public class UserDAO {
     public boolean createUser(UserModel user) {
-        String sql = "INSERT INTO users(id, username, password, email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users(id, username, password, email, isadmin) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, user.getId());
+            stmt.setString(1, user.getId());
             stmt.setString(2, user.getUsername());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getEmail());
+            stmt.setBoolean(5, user.isAdmin());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,10 +32,13 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 UserModel user = new UserModel();
-                user.setId(rs.getInt("id"));
+                user.setId(rs.getString("id"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setEmail(rs.getString("email"));
+
+                user.setAdmin(rs.getBoolean("isadmin"));
+                System.out.println(user.toString());
                 return user;
             }
         } catch (SQLException e) {

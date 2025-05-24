@@ -1,10 +1,14 @@
 package org.example.controller;
+import javafx.stage.Stage;
 import org.example.managers.UserManager;
 import org.example.models.UserModel;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.views.AdminPanel;
+import org.example.views.UserDashboard;
+
 import java.util.UUID;
 
 
@@ -27,6 +31,12 @@ public class LoginController {
         UserModel user = userManager.login(username, password);
         if (user != null) {
             statusLabel.setText("Giriş başarılı!");
+            if (user.isAdmin()) {
+                new AdminPanel(user);
+            }else{
+                new UserDashboard(user);
+
+            }
             // Ana panele geçiş burada yapılabilir
         } else {
             statusLabel.setText("Hatalı kullanıcı adı veya şifre.");
@@ -44,7 +54,9 @@ public class LoginController {
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
-        user.setId(2);
+        user.setId(UUID.randomUUID().toString());
+        boolean result = user.getUsername().contains("admin");
+        user.setAdmin(result);
 
         boolean success = userManager.registerUser(user);
         if (success) {
