@@ -8,8 +8,18 @@ public class UserModel {
     private String username;
     private String password;
     private String email;
-    private int id;
+    private String id;
+    private boolean admin;
     private List<Reservation> reservations;
+
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 
     public String getUsername() {
         return username;
@@ -35,11 +45,11 @@ public class UserModel {
         this.email = email;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -59,17 +69,20 @@ public class UserModel {
                 ", email='" + email + '\'' +
                 ", id='" + id + '\'' +
                 ", reservations=" + reservations +
+                ", admin=" + admin +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof UserModel userModel)) return false;
-        return Objects.equals(getUsername(), userModel.getUsername()) && Objects.equals(getPassword(), userModel.getPassword()) && Objects.equals(getEmail(), userModel.getEmail()) && Objects.equals(getId(), userModel.getId()) && Objects.equals(getReservations(), userModel.getReservations());
+        return isAdmin() == userModel.isAdmin() && Objects.equals(getUsername(), userModel.getUsername()) && Objects.equals(getPassword(), userModel.getPassword()) && Objects.equals(getEmail(), userModel.getEmail()) && Objects.equals(getId(), userModel.getId()) && Objects.equals(getReservations(), userModel.getReservations());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), getEmail(), getId(), getReservations());
+        return Objects.hash(getUsername(), getPassword(), getEmail(), getId(), isAdmin(), getReservations());
     }
+
 }

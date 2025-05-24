@@ -8,10 +8,11 @@ public class DatabaseInitializer {
         try(Connection connection = DatabaseConnector.connect(); Statement statement = connection.createStatement()) {
             // USERS TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS users (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "id TEXT PRIMARY KEY NOT NULL, " +
                     "username TEXT NOT NULL, " +
                     "email TEXT NOT NULL, " +
-                    "password TEXT NOT NULL " +
+                    "password TEXT NOT NULL, " +
+                    "isadmin BOOLEAN NOT NULL" +
                     ");"
             );
 

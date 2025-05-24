@@ -1,87 +1,77 @@
 package org.example.views;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.example.models.UserModel;
 
+public class AdminPanel {
 
-public class AdminPanel  extends JFrame {
+    private final UserModel adminUser;
 
-    private JTextField departureField;
-    private JTextField arrivalField;
-    private JTextField dateField;
-    private JTextField timeField;
-    private JTextField priceField;
-    private JTable tripTable;
-    private DefaultTableModel tableModel;
-
-    public AdminPanel() {
-        setTitle("Otobüs Rezervasyon - Admin Paneli");
-        setSize(700, 500);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        initUI();
+    public AdminPanel(UserModel adminUser) {
+        this.adminUser = adminUser;
+        show();
     }
 
-    private void initUI() {
-        // Form Paneli
-        JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Yeni Sefer Ekle"));
+    public void show() {
+        Stage stage = new Stage();
+        stage.setTitle("Admin Paneli - Hoş geldin, " + adminUser.getUsername());
 
-        departureField = new JTextField();
-        arrivalField = new JTextField();
-        dateField = new JTextField();
-        timeField = new JTextField();
-        priceField = new JTextField();
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(15));
 
-        formPanel.add(new JLabel("Kalkış:"));
-        formPanel.add(departureField);
-        formPanel.add(new JLabel("Varış:"));
-        formPanel.add(arrivalField);
-        formPanel.add(new JLabel("Tarih (YYYY-MM-DD):"));
-        formPanel.add(dateField);
-        formPanel.add(new JLabel("Saat (HH:MM):"));
-        formPanel.add(timeField);
-        formPanel.add(new JLabel("Fiyat:"));
-        formPanel.add(priceField);
+        Label titleLabel = new Label("Sefer Ekle");
 
-        JButton addButton = new JButton("Sefer Ekle");
-        formPanel.add(new JLabel());
-        formPanel.add(addButton);
+        TextField originField = new TextField();
+        originField.setPromptText("Kalkış Yeri");
 
-        // Tablo Paneli
-        String[] columnNames = {"Kalkış", "Varış", "Tarih", "Saat", "Fiyat"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        tripTable = new JTable(tableModel);
-        JScrollPane tableScrollPane = new JScrollPane(tripTable);
+        TextField destinationField = new TextField();
+        destinationField.setPromptText("Varış Yeri");
 
-        // Buton Aksiyonu
-        addButton.addActionListener((ActionEvent e) -> {
-            String departure = departureField.getText();
-            String arrival = arrivalField.getText();
-            String date = dateField.getText();
-            String time = timeField.getText();
-            String price = priceField.getText();
+        TextField dateTimeField = new TextField();
+        dateTimeField.setPromptText("Tarih ve Saat (yyyy-MM-ddTHH:mm)");
 
-            if (departure.isEmpty() || arrival.isEmpty() || date.isEmpty() || time.isEmpty() || price.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Lütfen tüm alanları doldurun.", "Uyarı", JOptionPane.WARNING_MESSAGE);
-                return;
+        TextField busIdField = new TextField();
+        busIdField.setPromptText("Otobüs ID");
+
+        Button addTripButton = new Button("Sefer Ekle");
+        Label messageLabel = new Label();
+
+        addTripButton.setOnAction(e -> {
+            String origin = originField.getText();
+            String destination = destinationField.getText();
+            String dateTime = dateTimeField.getText();
+            String busId = busIdField.getText();
+
+            // Burada controller ya da DAO çağrısı yapılmalı (örnek/mock işlem):
+            if (!origin.isEmpty() && !destination.isEmpty() && !dateTime.isEmpty() && !busId.isEmpty()) {
+                messageLabel.setText("Sefer başarıyla eklendi!");
+            } else {
+                messageLabel.setText("Lütfen tüm alanları doldurun!");
             }
-
-            tableModel.addRow(new Object[]{departure, arrival, date, time, price});
-
-            // Alanları temizle
-            departureField.setText("");
-            arrivalField.setText("");
-            dateField.setText("");
-            timeField.setText("");
-            priceField.setText("");
         });
 
-        // Ana Yerleşim
-        setLayout(new BorderLayout(10, 10));
-        add(formPanel, BorderLayout.NORTH);
-        add(tableScrollPane, BorderLayout.CENTER);
-    }
+        GridPane form = new GridPane();
+        form.setHgap(10);
+        form.setVgap(10);
+        form.add(new Label("Kalkış:"), 0, 0);
+        form.add(originField, 1, 0);
+        form.add(new Label("Varış:"), 0, 1);
+        form.add(destinationField, 1, 1);
+        form.add(new Label("Tarih/Saat:"), 0, 2);
+        form.add(dateTimeField, 1, 2);
+        form.add(new Label("Otobüs ID:"), 0, 3);
+        form.add(busIdField, 1, 3);
+        form.add(addTripButton, 1, 4);
+        form.add(messageLabel, 1, 5);
 
+        root.getChildren().addAll(titleLabel, form);
+
+        Scene scene = new Scene(root, 400, 300);
+        stage.setScene(scene);
+        stage.show();
+    }
 }
