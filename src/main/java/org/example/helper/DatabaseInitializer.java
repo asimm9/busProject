@@ -27,10 +27,11 @@ public class DatabaseInitializer {
 
             // TRIPS TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS trips (" +
-                    "trip_id INTEGER PRIMARY KEY, " +
+                    "trip_id TEXT PRIMARY KEY NOT NULL, " +
                     "origin TEXT NOT NULL, " +
                     "destination TEXT NOT NULL, " +
                     "departure_time TEXT NOT NULL, " +
+                    "time TEXT NOT NULL, " +
                     "bus_id INTEGER, " +
                     "FOREIGN KEY(bus_id) REFERENCES buses(bus_id)" +
                     ");"
@@ -51,9 +52,9 @@ public class DatabaseInitializer {
 
             // RESERVATIONS TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS reservations (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "user_id INTEGER, " +
-                    "trip_id INTEGER, " +
+                    "reservation_id TEXT PRIMARY KEY NOT NULL, " +
+                    "user_id TEXT, " +
+                    "trip_id TEXT, " +
                     "seat_id INTEGER, " +
                     "reservation_time TEXT, " +
                     "FOREIGN KEY(user_id) REFERENCES users(id), " +
