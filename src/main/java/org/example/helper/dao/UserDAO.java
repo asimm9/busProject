@@ -46,5 +46,25 @@ public class UserDAO {
         }
         return null;
     }
+    public static UserModel getUserById(String userId) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                UserModel user = new UserModel();
+                user.setId(rs.getString("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setEmail(rs.getString("email"));
+                user.setAdmin(rs.getBoolean("isadmin"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 }
