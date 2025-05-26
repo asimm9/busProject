@@ -1,7 +1,6 @@
 package org.example.helper.dao;
 
 import org.example.helper.DatabaseConnector;
-import org.example.models.Trip;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
