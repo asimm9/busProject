@@ -103,7 +103,7 @@ public class ReservationApp extends Application {
 
         // ✅ Rezervasyon Listeleme (ID dahil)
         listButton.setOnAction(e -> {
-            List<Reservation> reservations = manager.getReservations();
+            List<Reservation> reservations = manager.getReservations("5");
             if (reservations.isEmpty()) {
                 outputArea.appendText("[ℹ] Hiç rezervasyon bulunamadı.\n\n");
             } else {
@@ -135,7 +135,7 @@ public class ReservationApp extends Application {
                 String id = cancelIdField.getText();
                 // Tüm rezervasyonlar içinde arayıp iptal
                 Reservation target = null;
-                for (Reservation r : manager.getReservations()) {
+                for (Reservation r : manager.getReservations("5")) {
                     if (r.getId().equals(id)) {
                         target = r;
                         break;

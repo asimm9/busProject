@@ -106,7 +106,7 @@ public class ReservationDAO {
                 reservation.setUser(user);
 
                 // Trip nesnesini TripDAO’dan çekiyoruz
-                reservation.setTrip(new TripDAO().getTripById(rs.getString("trip_id")));
+                reservation.setTrip(new TripDAO().getTrip(rs.getString("trip_id")));
 
                 // Seat nesnesini SeatDAO’dan çekiyoruz
                 reservation.setSeat(SeatDAO.getSeatById(rs.getInt("seat_id")));
