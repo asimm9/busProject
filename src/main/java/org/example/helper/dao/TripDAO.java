@@ -96,4 +96,36 @@ public class TripDAO {
                 return null;
             }
     }
+
+    public List<Trip> getTripByFilteredParameters(String origin, String destination) {
+        String sql = "SELECT * FROM trips WHERE origin = ? AND destination = ?";
+        List<Trip> trips = new ArrayList<>();
+        try (Connection conn = DatabaseConnector.connect();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, origin);
+            statement.setString(2, destination);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String tripID = rs.getString("trip_id");
+                String originValue = rs.getString("origin");
+                String destinationValue = rs.getString("destination");
+                int busId = rs.getInt("bus_id");
+
+                Trip trip = new Trip();
+                trip.setTripID(tripID);
+                trip.setOrigin(originValue);
+                trip.setDestination(destinationValue);
+                DatePicker departureTime = new DatePicker();
+                trip.setDepartureTime(departureTime);
+                Bus bus = new Bus();
+                bus.setBusID(busId);
+                trip.setBus(bus);
+                trips.add(trip);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trips;
+    }
+
 }

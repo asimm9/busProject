@@ -30,4 +30,6 @@ public class TripManager {
 
     //ID'ye göre databaseden tek bir trip nesnesini çeker.
     public Trip getTripById(String id){return tripDAO.getTrip(id);}
+
+    public List<Trip> getTripByFilteredParameters(String from, String to){return tripDAO.getTripByFilteredParameters(from, to);}
 }
