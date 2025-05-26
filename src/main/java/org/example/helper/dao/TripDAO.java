@@ -74,26 +74,26 @@ public class TripDAO {
 
     public Trip getTrip(String tripID) {
         String sql = "SELECT * FROM trips WHERE trip_id = ?";
-        Trip trip = null;
-        try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
-            stmt.setString(1, tripID);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                trip = new Trip();
-                trip.setTripID(tripID);
-                trip.setOrigin(rs.getString("origin"));
-                trip.setDestination(rs.getString("destination"));
-                DatePicker departureTime = new DatePicker();
-                trip.setDepartureTime(departureTime);
-                trip.setTime(LocalDateTime.parse(rs.getString("time")));
-                int busId = rs.getInt("bus_id");
-                Bus bus = new Bus();
-                trip.setBus(bus);
+            Trip trip = null;
+            try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
+                stmt.setString(1, tripID);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    trip = new Trip();
+                    trip.setTripID(tripID);
+                    trip.setOrigin(rs.getString("origin"));
+                    trip.setDestination(rs.getString("destination"));
+                    DatePicker departureTime = new DatePicker();
+                    trip.setDepartureTime(departureTime);
+                    trip.setTime(LocalDateTime.parse(rs.getString("time")));
+                    int busId = rs.getInt("bus_id");
+                    Bus bus = new Bus();
+                    trip.setBus(bus);
+                }
+                return trip;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
             }
-            return trip;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
