@@ -11,6 +11,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.managers.BusManager;
+import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
 import org.example.models.Bus;
 import org.example.models.Seat;
@@ -26,6 +27,7 @@ public class AdminPanelController {
     private final AdminPanel view;
     private TripManager tripManager = TripManager.getInstance();
     private BusManager busManager = BusManager.getInstance();
+    private SeatManager seatManager = SeatManager.getInstance();
 
     //viewa bağlanma kısmı controller constructerında yapılıyor.
     public AdminPanelController(AdminPanel view) {
@@ -216,7 +218,95 @@ public class AdminPanelController {
             Bus bus = new Bus();
             bus.setBusType(busType);
             bus.setBusID(id);
+
             bus.setTotalSeats(Integer.parseInt(totalSeats));
+            int row= 0;
+            int column = 0;
+            Seat[][] seats;
+            if(Integer.parseInt(totalSeats) == 36){
+                if (busType.equals("2+2")){//2+2
+                    seats = new Seat[9][4];
+                    int seatNumber= 1;
+                    for (int rowCount = 0; rowCount < 9; rowCount++) {
+                        for (int columnCount = 0; columnCount < 4; columnCount++) {
+                            Seat seat = new Seat();
+                            seat.setColumn(columnCount);
+                            seat.setRow(rowCount);
+                            seat.setReserved(false);
+
+                            seat.setSeatID(String.valueOf(seatNumber));
+                            seat.setUserID(null);
+                            seat.setTripID(null);
+                            seat.setBusID(id);
+                            seats[rowCount][columnCount] = seat;
+                            seatNumber++;
+                        }
+                    }
+                    seatManager.insertSeatByBus(seats);
+                } else  {
+                    seats = new Seat[12][3];//2+1
+                    int seatNumber= 1;
+                    for (int rowCount = 0; rowCount < 12; rowCount++) {
+                        for (int columnCount = 0; columnCount < 3; columnCount++) {
+                            Seat seat = new Seat();
+                            seat.setColumn(columnCount);
+                            seat.setRow(rowCount);
+                            seat.setReserved(false);
+
+                            seat.setSeatID(String.valueOf(seatNumber));
+                            seat.setUserID(null);
+                            seat.setTripID(null);
+                            seat.setBusID(id);
+                            seats[rowCount][columnCount] = seat;
+                        seatNumber++;
+                        }
+                    }
+                    seatManager.insertSeatByBus(seats);
+                }
+            } else  {
+                if (busType.equals("2+2")){//48
+                    seats = new Seat[12][4];
+                    int seatNumber= 1;
+                    for (int rowCount = 0; rowCount < 12; rowCount++) {
+                        for (int columnCount = 0; columnCount < 4; columnCount++) {
+                            Seat seat = new Seat();
+                            seat.setColumn(columnCount);
+                            seat.setRow(rowCount);
+                            seat.setReserved(false);
+                            seat.setSeatID(String.valueOf(seatNumber));
+                            seat.setUserID(null);
+                            seat.setTripID(null);
+                            seat.setBusID(id);
+                            seats[rowCount][columnCount] = seat;
+                            seatNumber++;
+                        }
+                    }
+                    seatManager.insertSeatByBus(seats);
+
+                } else  {
+                    seats = new Seat[16][3];//2+1
+                    int seatNumber= 1;
+                    for (int rowCount = 0; rowCount < 16; rowCount++) {
+                        for (int columnCount = 0; columnCount < 3; columnCount++) {
+                            Seat seat = new Seat();
+                            seat.setColumn(columnCount);
+                            seat.setRow(rowCount);
+                            seat.setReserved(false);
+                            seat.setSeatID(String.valueOf(seatNumber));
+                            seat.setUserID(null);
+                            seat.setTripID(null);
+                            seat.setBusID(id);
+                            seats[rowCount][columnCount] = seat;
+                            seatNumber++;
+                        }
+                    }
+                    seatManager.insertSeatByBus(seats);
+
+                }
+            }
+
+
+
             bus.setSeatLayout(new Seat[3][3]);
              if(busManager.insertBus(bus)){
                  Alert alert = new Alert(Alert.AlertType.INFORMATION);

@@ -7,10 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeatManager {
+    public static SeatManager instance;
+
+    public static SeatManager getInstance() {
+        if (instance == null) {
+            instance = new SeatManager();
+        }
+        return instance;
+    }
+
     SeatDAO seatDAO = new SeatDAO();
 
     public boolean insertSeatsByTrip(List<Seat> seats) {
         return seatDAO.insertsSeatByTrip(seats);
     }
 
+    public boolean insertSeatByBus(Seat[][] seats) {
+        return seatDAO.insertSeatByBusID(seats);
+    }
 }

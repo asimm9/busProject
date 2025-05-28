@@ -1,6 +1,7 @@
 package org.example.helper.dao;
 
 import org.example.helper.DatabaseConnector;
+import org.example.models.Bus;
 import org.example.models.Seat;
 
 import java.sql.ResultSet;
@@ -85,4 +86,33 @@ public class SeatDAO {
         }
     }
 
+    public boolean insertSeatByBusID(Seat[][] seats) {
+    String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, bus_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
+        for (int row = 0; row < seats.length; row++) {
+            for (int column = 0; column < seats[row].length; column++) {
+                stmt.setString(1, seats[row][column].getSeatID());
+                stmt.setInt(2,  seats[row][column].getRow());
+                stmt.setInt(3,  seats[row][column].getColumn());
+                stmt.setInt(4,  seats[row][column].isReserved() ? 1 : 0);
+                stmt.setString(5,  seats[row][column].getUserID());
+                stmt.setString(6, seats[row][column].getTripID());
+                stmt.setString(7, seats[row][column].getBusID());
+                stmt.addBatch();
+            }
+
+        }
+        int[] result = stmt.executeBatch();
+        for (int i : result) {
+            if (i != 1) {
+                return false;
+            }
+        }
+        return true;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+    }
 }

@@ -38,7 +38,7 @@ public class DatabaseInitializer {
 
             // SEATS TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS seats (" +
-                    "seat_id TEXT PRIMARY KEY NOT NULL, " +
+                    "seat_id TEXT KEY NOT NULL, " +
                     "row_number INTEGER, " +
                     "column_number INTEGER, " +
                     "is_reserved INTEGER, " +
