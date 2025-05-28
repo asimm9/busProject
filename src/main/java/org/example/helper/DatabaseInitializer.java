@@ -18,10 +18,9 @@ public class DatabaseInitializer {
 
             // BUSES TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS buses (" +
-                    "bus_id INTEGER PRIMARY KEY, " +
+                    "bus_id TEXT PRIMARY KEY, " +
                     "bus_type TEXT, " +
-                    "total_seats INTEGER, " +
-                    "plate_number INTEGER " +
+                    "total_seats INTEGER" +
                     ");"
             );
 

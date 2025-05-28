@@ -8,17 +8,16 @@ public class Bus {
     private Seat[][] seatLayout;
     private int totalSeats;
     private String busType;
-    private int plateNumber;
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Bus bus)) return false;
-        return getBusID() == bus.getBusID() && getTotalSeats() == bus.getTotalSeats() && getPlateNumber() == bus.getPlateNumber() && Objects.deepEquals(getSeatLayout(), bus.getSeatLayout()) && Objects.equals(getBusType(), bus.getBusType());
+        return getBusID() == bus.getBusID() && getTotalSeats() == bus.getTotalSeats() && Objects.deepEquals(getSeatLayout(), bus.getSeatLayout()) && Objects.equals(getBusType(), bus.getBusType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBusID(), Arrays.deepHashCode(getSeatLayout()), getTotalSeats(), getBusType(), getPlateNumber());
+        return Objects.hash(getBusID(), Arrays.deepHashCode(getSeatLayout()), getTotalSeats(), getBusType());
     }
 
     @Override
@@ -28,7 +27,6 @@ public class Bus {
                 ", seatLayout=" + Arrays.toString(seatLayout) +
                 ", totalSeats=" + totalSeats +
                 ", busType='" + busType + '\'' +
-                ", plateNumber=" + plateNumber +
                 '}';
     }
 
@@ -60,14 +58,6 @@ public class Bus {
 
     public void setBusType(String busType) {
         this.busType = busType;
-    }
-
-    public int getPlateNumber() {
-        return plateNumber;
-    }
-
-    public void setPlateNumber(int plateNumber) {
-        this.plateNumber = plateNumber;
     }
 
 }

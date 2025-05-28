@@ -8,13 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class BusDAO {
+
     public boolean insertBus(Bus bus) {
-        String sql = "INSERT INTO buses(bus_id, bus_type, total_seats, plate_number) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO buses(bus_id, bus_type, total_seats) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, bus.getBusID());
             stmt.setString(2, bus.getBusType());
             stmt.setInt(3, bus.getTotalSeats());
-            stmt.setInt(4, bus.getPlateNumber());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

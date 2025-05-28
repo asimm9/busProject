@@ -12,24 +12,6 @@ import java.util.List;
 
 public class SeatDAO {
 
-
-    /*public boolean insertSeat(Seat seat, int tripId) {
-        String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, bus_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, seat.getSeatID());
-            stmt.setInt(2, seat.getRow());
-            stmt.setInt(3, seat.getColumn());
-            stmt.setInt(4, seat.isReserved() ? 1 : 0);
-            stmt.setString(5, seat.getUserID());
-            stmt.setInt(6, tripId);
-            stmt.setString(7, seat.getBusID());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-*/
     public static Seat getSeatById(int seatId) {
         String sql = "SELECT * FROM seats WHERE seat_id = ?";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -12,7 +12,7 @@ public class TripManager {
     private int tripIDcounter;
     private TripDAO tripDAO = new TripDAO();
 
-    private TripManager getInstance() {
+    public static TripManager getInstance() {
         if (instance == null) {
             instance = new TripManager();
         }

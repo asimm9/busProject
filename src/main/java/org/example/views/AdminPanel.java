@@ -1,6 +1,7 @@
 package org.example.views;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -33,6 +34,7 @@ public class AdminPanel {
     private ToggleButton busButton;
     private ToggleButton planeButton;
 
+
     public AdminPanel(UserModel adminUser) {
         this.adminUser = adminUser;
         this.controller = new AdminPanelController(this);
@@ -60,7 +62,7 @@ public class AdminPanel {
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
 
         VBox formBox = new VBox(15);
-        formBox.setMaxWidth(400);
+        formBox.setMaxWidth(500);
 
         // Ulaşım Türü Seçimi (Otobüs / Uçak)
         ToggleGroup transportToggle = new ToggleGroup();
@@ -85,17 +87,28 @@ public class AdminPanel {
         // Kalkış ve Varış
         fromField = new TextField();
         VBox fromCard = createLabeledInput("Kalkış", fromField, "Kalkış Yeri");
+        fromCard.setAlignment(Pos.CENTER);
+        fromCard.setMaxWidth(Double.MAX_VALUE);
+
 
         toField = new TextField();
         VBox toCard = createLabeledInput("Varış", toField, "Varış Yeri");
+        toCard.setAlignment(Pos.CENTER);
+        toCard.setMaxWidth(Double.MAX_VALUE);
+
 
         // Tarih
         datePicker = new DatePicker();
         VBox dateCard = createLabeledInput("Tarih", datePicker);
+        dateCard.setAlignment(Pos.CENTER);
+        dateCard.setMaxWidth(Double.MAX_VALUE);
+
 
         // Saat
         timeField = new TextField();
         VBox timeCard = createLabeledInput("Saat", timeField, "Örn: 13:30");
+        timeCard.setAlignment(Pos.CENTER);
+        timeCard.setMaxWidth(Double.MAX_VALUE);
 
         // ID alanları
         busIdField = new TextField();
@@ -125,11 +138,49 @@ public class AdminPanel {
         listTripsButton.setPadding(new Insets(10, 25, 10, 25));
         listTripsButton.setOnAction(e -> controller.handleListTrips());
 
+        //Bus Ekleme butonu
+        Button addBusButton = new Button("Otobüs Ekle");
+        addBusButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        addBusButton.setTextFill(Color.web("#8b0033"));
+        addBusButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+        addBusButton.setPadding(new Insets(10, 25, 10, 25));
+        addBusButton.setOnAction(actionEvent -> controller.handleInsertBus());
+
+        //busları listleme butonu
+        Button listBusesButton = new Button("Otobüsleri Listele");
+        listBusesButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        listBusesButton.setTextFill(Color.web("#3b5998"));
+        listBusesButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+        listBusesButton.setPadding(new Insets(10, 25, 10, 25));
+        listBusesButton.setOnAction(actionEvent -> controller.handleListBuses());
+
+        // Sefer işlemleri (Sol taraf)
+        VBox tripBox = new VBox(10, addTripButton, listTripsButton);
+        tripBox.setAlignment(Pos.CENTER);
+
+        // Otobüs işlemleri (Sağ taraf)
+        VBox busBox = new VBox(10, addBusButton, listBusesButton);
+        busBox.setAlignment(Pos.CENTER);
+
+        // Dikey ayraç
+        Separator separator = new Separator();
+        separator.setOrientation(Orientation.VERTICAL);
+        separator.setPrefHeight(70); // İstersen boyunu ayarla
+
+        // Hepsini bir HBox'ta topla
+        HBox buttonRow = new HBox(20, tripBox, separator, busBox);
+        buttonRow.setAlignment(Pos.CENTER);
+
         messageLabel = new Label();
         messageLabel.setTextFill(Color.WHITE);
         messageLabel.setFont(Font.font("Arial", 13));
 
         StackPane transportIdStack = new StackPane(busCard, planeCard);
+        StackPane.setAlignment(busCard, Pos.CENTER);
+        StackPane.setAlignment(planeCard, Pos.CENTER);
+
+        busCard.setMaxWidth(Double.MAX_VALUE);
+        planeCard.setMaxWidth(Double.MAX_VALUE);
 
         formBox.getChildren().addAll(
                 transportBox,
@@ -138,8 +189,7 @@ public class AdminPanel {
                 dateCard,
                 timeCard,
                 transportIdStack,
-                addTripButton,
-                listTripsButton, // <-- Burada ekledik
+                buttonRow,
                 messageLabel
         );
 
