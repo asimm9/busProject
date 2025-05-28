@@ -13,6 +13,31 @@ public class UserModel {
     private List<Reservation> reservations;
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserModel userModel)) return false;
+        return isAdmin() == userModel.isAdmin() && Objects.equals(getUsername(), userModel.getUsername())
+                && Objects.equals(getPassword(), userModel.getPassword()) && Objects.equals(getEmail(), userModel.getEmail())
+                && Objects.equals(getId(), userModel.getId()) && Objects.equals(getReservations(), userModel.getReservations());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getPassword(), getEmail(), getId(), isAdmin(), getReservations());
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", id='" + id + '\'' +
+                ", reservations=" + reservations +
+                ", admin=" + admin +
+                '}';
+    }
+
     public boolean isAdmin() {
         return admin;
     }
@@ -61,28 +86,5 @@ public class UserModel {
         this.reservations = reservations;
     }
 
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", id='" + id + '\'' +
-                ", reservations=" + reservations +
-                ", admin=" + admin +
-                '}';
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof UserModel userModel)) return false;
-        return isAdmin() == userModel.isAdmin() && Objects.equals(getUsername(), userModel.getUsername()) && Objects.equals(getPassword(), userModel.getPassword()) && Objects.equals(getEmail(), userModel.getEmail()) && Objects.equals(getId(), userModel.getId()) && Objects.equals(getReservations(), userModel.getReservations());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), getEmail(), getId(), isAdmin(), getReservations());
-    }
 
 }

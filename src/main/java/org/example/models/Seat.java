@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public class Seat {
     private String seatID;
-    private boolean isReserved;
-    private int row;
-    private int column;
     private String busID;
     private String tripID;
     private String userID;
+    private int column;
+    private int row;
+    private boolean isReserved;
 
     @Override
     public String toString() {
@@ -27,7 +27,9 @@ public class Seat {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Seat seat)) return false;
-        return isReserved() == seat.isReserved() && getRow() == seat.getRow() && getColumn() == seat.getColumn() && Objects.equals(getSeatID(), seat.getSeatID()) && Objects.equals(getBusID(), seat.getBusID()) && Objects.equals(getTripID(), seat.getTripID()) && Objects.equals(getUserID(), seat.getUserID());
+        return isReserved() == seat.isReserved() && getRow() == seat.getRow() && getColumn() == seat.getColumn()
+                && Objects.equals(getSeatID(), seat.getSeatID()) && Objects.equals(getBusID(), seat.getBusID())
+                && Objects.equals(getTripID(), seat.getTripID()) && Objects.equals(getUserID(), seat.getUserID());
     }
 
     @Override

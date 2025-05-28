@@ -11,6 +11,28 @@ public class Reservation {
     private Seat seat;
     private LocalDateTime reservationDateTime;
 
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", user=" + user +
+                ", trip=" + trip +
+                ", seat=" + seat +
+                ", reservationDateTime=" + reservationDateTime +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Reservation that)) return false;
+        return getId() == that.getId() && Objects.equals(getUser(), that.getUser()) && Objects.equals(getTrip(), that.getTrip()) && Objects.equals(getSeat(), that.getSeat()) && Objects.equals(getReservationDateTime(), that.getReservationDateTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getTrip(), getSeat(), getReservationDateTime());
+    }
+
     public String getId() {
         return id;
     }
@@ -47,29 +69,6 @@ public class Reservation {
         return reservationDateTime;
     }
 
-    public void setReservationDateTime(LocalDateTime reservationDateTime) {
-        this.reservationDateTime = reservationDateTime;
-    }
+    public void setReservationDateTime(LocalDateTime reservationDateTime) {this.reservationDateTime = reservationDateTime;}
 
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", user=" + user +
-                ", trip=" + trip +
-                ", seat=" + seat +
-                ", reservationDateTime=" + reservationDateTime +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Reservation that)) return false;
-        return getId() == that.getId() && Objects.equals(getUser(), that.getUser()) && Objects.equals(getTrip(), that.getTrip()) && Objects.equals(getSeat(), that.getSeat()) && Objects.equals(getReservationDateTime(), that.getReservationDateTime());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUser(), getTrip(), getSeat(), getReservationDateTime());
-    }
 }

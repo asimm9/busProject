@@ -10,9 +10,29 @@ public class Bus {
     private String busType;
     private int plateNumber;
 
-    public String getBusID() {
-        return busID;
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Bus bus)) return false;
+        return getBusID() == bus.getBusID() && getTotalSeats() == bus.getTotalSeats() && getPlateNumber() == bus.getPlateNumber() && Objects.deepEquals(getSeatLayout(), bus.getSeatLayout()) && Objects.equals(getBusType(), bus.getBusType());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBusID(), Arrays.deepHashCode(getSeatLayout()), getTotalSeats(), getBusType(), getPlateNumber());
+    }
+
+    @Override
+    public String toString() {
+        return "Bus{" +
+                "busID=" + busID +
+                ", seatLayout=" + Arrays.toString(seatLayout) +
+                ", totalSeats=" + totalSeats +
+                ", busType='" + busType + '\'' +
+                ", plateNumber=" + plateNumber +
+                '}';
+    }
+
+    public String getBusID() {return busID;}
 
     public void setBusID(String busID) {
         this.busID = busID;
@@ -50,25 +70,4 @@ public class Bus {
         this.plateNumber = plateNumber;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Bus bus)) return false;
-        return getBusID() == bus.getBusID() && getTotalSeats() == bus.getTotalSeats() && getPlateNumber() == bus.getPlateNumber() && Objects.deepEquals(getSeatLayout(), bus.getSeatLayout()) && Objects.equals(getBusType(), bus.getBusType());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getBusID(), Arrays.deepHashCode(getSeatLayout()), getTotalSeats(), getBusType(), getPlateNumber());
-    }
-
-    @Override
-    public String toString() {
-        return "Bus{" +
-                "busID=" + busID +
-                ", seatLayout=" + Arrays.toString(seatLayout) +
-                ", totalSeats=" + totalSeats +
-                ", busType='" + busType + '\'' +
-                ", plateNumber=" + plateNumber +
-                '}';
-    }
 }

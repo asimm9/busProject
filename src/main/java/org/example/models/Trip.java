@@ -17,6 +17,33 @@ public class Trip {
     private List<Seat> seatList;
 
 
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "tripID=" + tripID +
+                ", origin='" + origin + '\'' +
+                ", destination='" + destination + '\'' +
+                ", departureTime=" + departureTime +
+                ", bus=" + bus +
+                ", seatList=" + seatList +
+                ", time=" + time +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Trip trip)) return false;
+        return Objects.equals(getTripID(), trip.getTripID()) && Objects.equals(getOrigin(), trip.getOrigin())
+                && Objects.equals(getDestination(), trip.getDestination()) && Objects.equals(getDepartureTime(),
+                trip.getDepartureTime()) && Objects.equals(getTime(), trip.getTime()) && Objects.equals(getBus(), trip.getBus())
+                && Objects.equals(getSeatList(), trip.getSeatList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTripID(), getOrigin(), getDestination(), getDepartureTime(), getTime(), getBus(), getSeatList());
+    }
+
 
     public LocalDateTime getTime() {
         return time;
@@ -72,30 +99,6 @@ public class Trip {
 
     public void setSeatList(List<Seat> seatList) {
         this.seatList = seatList;
-    }
-
-    @Override
-    public String toString() {
-        return "Trip{" +
-                "tripID=" + tripID +
-                ", origin='" + origin + '\'' +
-                ", destination='" + destination + '\'' +
-                ", departureTime=" + departureTime +
-                ", bus=" + bus +
-                ", seatList=" + seatList +
-                ", time=" + time +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Trip trip)) return false;
-        return Objects.equals(getTripID(), trip.getTripID()) && Objects.equals(getOrigin(), trip.getOrigin()) && Objects.equals(getDestination(), trip.getDestination()) && Objects.equals(getDepartureTime(), trip.getDepartureTime()) && Objects.equals(getTime(), trip.getTime()) && Objects.equals(getBus(), trip.getBus()) && Objects.equals(getSeatList(), trip.getSeatList());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTripID(), getOrigin(), getDestination(), getDepartureTime(), getTime(), getBus(), getSeatList());
     }
 
 
