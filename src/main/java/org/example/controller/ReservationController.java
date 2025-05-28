@@ -18,6 +18,7 @@ import org.example.models.Reservation;
 import org.example.models.Seat;
 import org.example.models.Trip;
 import org.example.models.UserModel;
+import org.example.views.SeatLayout;
 import org.example.views.UserDashboard;
 
 import java.time.LocalDate;
@@ -32,9 +33,11 @@ public class ReservationController {
     private final TripManager tripManager = new TripManager();
     private final ReservationManager reservationManager =  ReservationManager.getInstance();
 
+
     public ReservationController(UserDashboard view, UserModel user) {
         this.view = view;
         this.user = user;
+
     }
 
     // Sefer arama işlemi
@@ -99,23 +102,31 @@ public class ReservationController {
             return;
         }
         // İstediğin işlemi burada yapabilirsin (veritabanına kayıt vs.)
-        Reservation reservation = new Reservation();
-        reservation.setId(UUID.randomUUID().toString());
-        reservation.setUser(user);
-        reservation.setTrip(selected);
-        Seat seat = new Seat();
-        reservation.setSeat(seat);
-        LocalDateTime dateTime = LocalDateTime.now();
-        reservation.setReservationDateTime(dateTime);
-        reservationManager.createReservation(reservation);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Rezervasyon");
-        alert.setHeaderText(null);
-        alert.setContentText(
-                selected.getOrigin() + " → " + selected.getDestination() +
-                        "\nTarih: " + selected.getDepartureTime() + " Saat: " + selected.getTime() +
-                        "\nRezervasyon işlemi başarılı!"
-        );
-        alert.showAndWait();
+
+
+        if(view.seatLayout.secilenKoltuklar.size() != 0){
+
+            Reservation reservation = new Reservation();
+            reservation.setId(UUID.randomUUID().toString());
+            reservation.setUser(user);
+            reservation.setTrip(selected);
+            Seat seat = new Seat();
+            reservation.setSeat(seat);
+            LocalDateTime dateTime = LocalDateTime.now();
+            reservation.setReservationDateTime(dateTime);
+            reservationManager.createReservation(reservation);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Rezervasyon");
+            alert.setHeaderText(null);
+            alert.setContentText(
+                    selected.getOrigin() + " → " + selected.getDestination() +
+                            "\nTarih: " + selected.getDepartureTime() + " Saat: " + selected.getTime() +
+                            "\nRezervasyon işlemi başarılı!"
+            );
+
+            alert.showAndWait();
+        }
+
+
     }
 }

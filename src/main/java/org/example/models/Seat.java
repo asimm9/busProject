@@ -3,18 +3,54 @@ package org.example.models;
 import java.util.Objects;
 
 public class Seat {
-    private int seatNumber;
+    private String seatID;
     private boolean isReserved;
-    private String passengerName;
     private int row;
     private int column;
+    private String busID;
+    private String tripID;
+    private String userID;
 
-    public int getSeatNumber() {
-        return seatNumber;
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "seatID='" + seatID + '\'' +
+                ", isReserved=" + isReserved +
+                ", row=" + row +
+                ", column=" + column +
+                ", busID='" + busID + '\'' +
+                ", tripID='" + tripID + '\'' +
+                ", userID='" + userID + '\'' +
+                '}';
     }
 
-    public void setSeatNumber(int seatNumber) {
-        this.seatNumber = seatNumber;
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Seat seat)) return false;
+        return isReserved() == seat.isReserved() && getRow() == seat.getRow() && getColumn() == seat.getColumn() && Objects.equals(getSeatID(), seat.getSeatID()) && Objects.equals(getBusID(), seat.getBusID()) && Objects.equals(getTripID(), seat.getTripID()) && Objects.equals(getUserID(), seat.getUserID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeatID(), isReserved(), getRow(), getColumn(), getBusID(), getTripID(), getUserID());
+    }
+
+    public String getUserID() {return userID;}
+
+    public void setUserID(String userID) {this.userID = userID;}
+
+    public String getBusID() {return busID;}
+
+    public void setBusID(String busID) {this.busID = busID;}
+
+    public String getTripID() {return tripID;}
+
+    public void setTripID(String tripID) {this.tripID = tripID;}
+
+    public String getSeatID() {return seatID;}
+
+    public void setSeatID(String seatID) {
+        this.seatID = seatID;
     }
 
     public boolean isReserved() {
@@ -23,14 +59,6 @@ public class Seat {
 
     public void setReserved(boolean reserved) {
         isReserved = reserved;
-    }
-
-    public String getPassengerName() {
-        return passengerName;
-    }
-
-    public void setPassengerName(String passengerName) {
-        this.passengerName = passengerName;
     }
 
     public int getRow() {
@@ -49,25 +77,4 @@ public class Seat {
         this.column = column;
     }
 
-    @Override
-    public String toString() {
-        return "Seat{" +
-                "seatNumber=" + seatNumber +
-                ", isReserved=" + isReserved +
-                ", passengerName='" + passengerName + '\'' +
-                ", row=" + row +
-                ", column=" + column +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Seat seat)) return false;
-        return getSeatNumber() == seat.getSeatNumber() && isReserved() == seat.isReserved() && getRow() == seat.getRow() && getColumn() == seat.getColumn() && Objects.equals(getPassengerName(), seat.getPassengerName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getSeatNumber(), isReserved(), getPassengerName(), getRow(), getColumn());
-    }
 }

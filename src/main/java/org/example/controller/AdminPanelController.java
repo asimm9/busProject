@@ -53,7 +53,7 @@ public class AdminPanelController {
         if (!origin.isEmpty() && !destination.isEmpty() /*&& !date.isEmpty() && !now.isEmpty()*/ && !busID.isEmpty()) {
             Trip trip = new Trip();
             Bus bus = new Bus();
-            bus.setBusID(Integer.parseInt(busID));
+            bus.setBusID(busID);
             bus.setBusType("s");
             bus.setPlateNumber(2);
             bus.setSeatLayout(null);

@@ -28,9 +28,11 @@ public class UserDashboard {
     public ToggleButton planeButton;
     public VBox tripListBox;
     public Button reserveButton;
+    public SeatLayout seatLayout;
 
     // Seçili sefer (tıklanınca güncellenir)
     public Trip selectedTrip = null;
+
 
     public UserDashboard(UserModel user) {
         this.user = user;
@@ -104,8 +106,8 @@ public class UserDashboard {
         reserveButton.setDisable(true); // Başta disable
 
         // Butonlar controller metodlarına yönlendirir
-        searchTripButton.setOnAction(e -> reservationController.handleSearchTrips());
-        reserveButton.setOnAction(e -> reservationController.handleReservation());
+        searchTripButton.setOnAction(e -> reservationController.handleSearchTrips());//sefer arama butonu
+        reserveButton.setOnAction(e -> reservationController.handleReservation());//rezervasyon yapma butonu
 
         root.getChildren().addAll(
                 welcomeLabel,
@@ -131,6 +133,11 @@ public class UserDashboard {
         for (javafx.scene.Node node : tripListBox.getChildren()) {
             if (node instanceof VBox) {
                 ((VBox) node).setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+
+                //carda tıklandığında koltuk seçme ekranını aç.
+                seatLayout = new SeatLayout(selectedTrip,user);
+                Stage stage = new Stage();
+                seatLayout.start(stage);
             }
         }
         // Seçili kartı vurgula

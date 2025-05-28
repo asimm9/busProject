@@ -26,7 +26,7 @@ public class ReservationDAO {
             stmt.setString(1, reservation.getId());                           // reservation_id TEXT
             stmt.setString(2, reservation.getUser().getId());                  // user_id TEXT
             stmt.setString(   3, reservation.getTrip().getTripID());              // trip_id INTEGER
-            stmt.setInt(   4, reservation.getSeat().getSeatNumber());          // seat_id INTEGER
+            stmt.setString(   4, reservation.getSeat().getSeatID());          // seat_id INTEGER
             stmt.setString(5, reservation.getReservationDateTime().toString());
 
             return stmt.executeUpdate() > 0;

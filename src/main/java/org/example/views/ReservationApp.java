@@ -71,7 +71,7 @@ public class ReservationApp extends Application {
                 String email = emailField.getText();
                 String from = fromField.getText();
                 String to = toField.getText();
-                int seatNumber = Integer.parseInt(seatField.getText());
+                String seatNumber = seatField.getText();
                 UserModel user = new UserModel();
                 user.setUsername(username);
                 user.setEmail(email);
@@ -79,7 +79,7 @@ public class ReservationApp extends Application {
                 trip.setOrigin(from);
                 trip.setDestination(to);
                 Seat seat = new Seat();
-                seat.setSeatNumber(seatNumber);
+                seat.setSeatID(seatNumber);
 
                 Reservation r = new Reservation();
                 r.setId(UUID.randomUUID().toString());
@@ -115,12 +115,12 @@ public class ReservationApp extends Application {
                     } else {
                         username = "Bilinmeyen Kullanıcı";
                     }
-                    int seatNo = (r.getSeat() != null) ? r.getSeat().getSeatNumber() : -1;
+                    String seatNo = (r.getSeat() != null) ? r.getSeat().getSeatID() : "";
 
                     outputArea.appendText(
                             "ID: " + r.getId()
                                     + " | Kullanıcı: " + username
-                                    + " | Koltuk: " + (seatNo >= 0 ? seatNo : "—")
+                                    + " | Koltuk: " + (seatNo =="" ? seatNo : "—")
                                     + "\n"
                     );
                 }

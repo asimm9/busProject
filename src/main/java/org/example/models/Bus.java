@@ -4,17 +4,17 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Bus {
-    private int busID;
+    private String busID;
     private Seat[][] seatLayout;
     private int totalSeats;
     private String busType;
     private int plateNumber;
 
-    public int getBusID() {
+    public String getBusID() {
         return busID;
     }
 
-    public void setBusID(int busID) {
+    public void setBusID(String busID) {
         this.busID = busID;
     }
 

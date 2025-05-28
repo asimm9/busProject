@@ -1,6 +1,5 @@
 package org.example.views;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,19 +10,39 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.example.controller.SeatLayoutController;
+import org.example.models.Seat;
+import org.example.models.Trip;
+import org.example.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeatLayout extends Application {
+public class SeatLayout {
 
+    private final SeatLayoutController controller;
     private GridPane grid;
-    private List<Button> secilenKoltuklar = new ArrayList<>();
     private BorderPane root;
-    private VBox centerBox;
     private ScrollPane scrollPane;
+    private VBox centerBox;
+    private final Trip trip;
+    private final UserModel user;
 
-    @Override
+    public List<Button> secilenKoltuklar;
+    public List<Seat> selectedSeats;
+    public Button confirmButton;
+    public List<Seat> allSeats;
+
+
+    public SeatLayout(Trip trip, UserModel user) {
+        controller = new SeatLayoutController(this);
+        secilenKoltuklar = new ArrayList<>();
+        selectedSeats = new ArrayList<>();
+        allSeats = new ArrayList<>();
+        this.trip = trip;
+        this.user = user;
+    }
+
     public void start(Stage primaryStage) {
         root = new BorderPane();
 
@@ -50,18 +69,13 @@ public class SeatLayout extends Application {
 
         olusturKoltukGrid(true); // ilk gösterim 2+1
 
-        Button onayla = new Button("Onayla");
-        onayla.setPrefWidth(200);
-        onayla.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
-        onayla.setOnAction(e -> {
-            for (Button b : secilenKoltuklar) {
-                b.setStyle("-fx-background-color: #8B0000; -fx-text-fill: white;");
-                b.setDisable(true);
-            }
-            secilenKoltuklar.clear();
-        });
+        confirmButton = new Button("Onayla");
+        confirmButton.setPrefWidth(200);
+        confirmButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+        confirmButton.setOnAction(e -> controller.handleSelectSeat());
 
-        centerBox.getChildren().addAll(scrollPane, onayla);
+
+        centerBox.getChildren().addAll(scrollPane, confirmButton);
 
         root.setTop(secimBox);
         root.setCenter(centerBox);
@@ -76,30 +90,47 @@ public class SeatLayout extends Application {
     }
 
     private void olusturKoltukGrid(boolean ikiArtıBir) {
-        secilenKoltuklar.clear();
 
+        //hem buton listesi hem de koltuk listeri sıfırlandı
+        secilenKoltuklar.clear();
+        selectedSeats.clear();
+        allSeats.clear();
+
+        //grid pane in sizeları ve konumu burda ayarlandı
         grid = new GridPane();
         grid.setHgap(10); // Koltuklar arası mesafe azaltıldı
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
 
-        int siraSayisi = 10;
-        int koltukNumarasi = 1;
+
+
+        int siraSayisi = 10; //row sayısı
+        int koltukNumarasi = 1; // koltuk numarasını 1den başlatmak için
 
         grid.getChildren().clear();
 
         for (int i = 0; i < siraSayisi; i++) {
             if (ikiArtıBir) {
                 for (int j = 0; j < 2; j++) {
-                    Button button = createSeatButton(String.valueOf(koltukNumarasi++));
+                    Seat seat = createSeatInstance(String.valueOf(koltukNumarasi),i+1,j+1);
+                    allSeats.add(seat);
+                    Button button = createSeatButton(String.valueOf(koltukNumarasi));
                     grid.add(button, j, i);
+                    koltukNumarasi++;
                 }
-                Button button = createSeatButton(String.valueOf(koltukNumarasi++));
+                Seat seat = createSeatInstance(String.valueOf(koltukNumarasi),i+1,3);
+                allSeats.add(seat);
+                Button button = createSeatButton(String.valueOf(koltukNumarasi));
                 grid.add(button, 3, i);
+                koltukNumarasi++;
             } else {
                 for (int j = 0; j < 2; j++) {
-                    Button button = createSeatButton(String.valueOf(koltukNumarasi++));
+                    Seat seat = createSeatInstance(String.valueOf(koltukNumarasi),i+ 1 ,j+ 1 );
+                    allSeats.add(seat);
+                    Button button = createSeatButton(String.valueOf(koltukNumarasi));
                     grid.add(button, j, i);
+
+                    koltukNumarasi++;
                 }
 
                 Region spacer = new Region();
@@ -107,8 +138,12 @@ public class SeatLayout extends Application {
                 grid.add(spacer, 2, i);
 
                 for (int j = 3; j < 5; j++) {
-                    Button button = createSeatButton(String.valueOf(koltukNumarasi++));
+                    Seat seat = createSeatInstance(String.valueOf(koltukNumarasi),i,j);
+                    allSeats.add(seat);
+                    Button button = createSeatButton(String.valueOf(koltukNumarasi));
                     grid.add(button, j, i);
+
+                    koltukNumarasi++;
                 }
             }
         }
@@ -133,26 +168,39 @@ public class SeatLayout extends Application {
         button.setGraphic(content);
         button.setStyle("-fx-background-color: transparent;");
 
-        ayarlaSecimDavranisi(button);
+
+        ayarlaSecimDavranisi(button,allSeats.get(Integer.parseInt(number)-1));
 
         return button;
     }
+    private Seat createSeatInstance(String seatID,int row, int column) {  //seatID koltuk numarasına referans eder.
+        Seat seat = new Seat();
+        seat.setTripID(trip.getTripID());
+        seat.setBusID(trip.getBus().getBusID());
+        seat.setUserID(user.getId());
+        seat.setSeatID(seatID);
+        seat.setReserved(false);
+        seat.setRow(row);
+        seat.setColumn(column);
+        return seat;
+    }
 
-    private void ayarlaSecimDavranisi(Button button) {
+    private void ayarlaSecimDavranisi(Button button,Seat seat) {
         button.setOnAction(e -> {
             if (!button.isDisabled()) {
                 if (button.getStyle().contains("#00ff00")) {
                     button.setStyle("-fx-background-color: transparent;");
                     secilenKoltuklar.remove(button);
+                    seat.setReserved(false);
+                    selectedSeats.remove(seat);
                 } else {
                     button.setStyle("-fx-background-color:#00ff00;");
                     secilenKoltuklar.add(button);
+                    seat.setReserved(true);
+                    selectedSeats.add(seat);
                 }
             }
         });
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

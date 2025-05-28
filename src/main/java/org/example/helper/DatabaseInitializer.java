@@ -39,14 +39,16 @@ public class DatabaseInitializer {
 
             // SEATS TABLE
             statement.execute("CREATE TABLE IF NOT EXISTS seats (" +
-                    "seat_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "seat_number INTEGER, " +
+                    "seat_id TEXT PRIMARY KEY NOT NULL, " +
                     "row_number INTEGER, " +
                     "column_number INTEGER, " +
                     "is_reserved INTEGER, " +
-                    "passenger_name TEXT, " +
-                    "trip_id INTEGER, " +
-                    "FOREIGN KEY(trip_id) REFERENCES trips(trip_id)" +
+                    "user_id TEXT, " +
+                    "trip_id TEXT, " +
+                    "bus_id TEXT, " +
+                    "FOREIGN KEY(trip_id) REFERENCES trips(trip_id), " +
+                    "FOREIGN KEY(bus_id) REFERENCES buses(bus_id), " +
+                    "FOREIGN KEY(user_id) REFERENCES users(id)"+
                     ");"
             );
 

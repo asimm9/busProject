@@ -23,7 +23,7 @@ public class TripDAO {
             stmt.setString(3, trip.getDestination());
             stmt.setString(4, trip.getDepartureTime().toString());
             stmt.setString(5, trip.getTime().toString());
-            stmt.setInt(6, trip.getBus().getBusID());
+            stmt.setString(6, trip.getBus().getBusID());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,7 +109,7 @@ public class TripDAO {
                 String tripID = rs.getString("trip_id");
                 String originValue = rs.getString("origin");
                 String destinationValue = rs.getString("destination");
-                int busId = rs.getInt("bus_id");
+                String busId = rs.getString("bus_id");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
