@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TripDAO {
+
+    //dbye yeni bir trip eklemek için kullanılır
     public boolean insertTrip(Trip trip) {
         String sql = "INSERT INTO trips(trip_id, origin, destination, departure_time, time, bus_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -31,6 +33,7 @@ public class TripDAO {
         }
     }
 
+    //verilen tripi dbden silmek için kullanılır
     public boolean deleteTrip(Trip trip) {
         String sql = "DELETE FROM trips WHERE trip_id = ?";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -42,6 +45,7 @@ public class TripDAO {
         }
     }
 
+    //dbden tüm tripleri getirir
     public List<Trip> getAllTrips() {
         String sql = "SELECT * FROM trips";
         List<Trip> trips = new ArrayList<>();
@@ -72,6 +76,7 @@ public class TripDAO {
         }
     }
 
+    //id ye göre dbden trip getirmek için kullanılır
     public Trip getTrip(String tripID) {
         String sql = "SELECT * FROM trips WHERE trip_id = ?";
             Trip trip = null;
@@ -97,6 +102,7 @@ public class TripDAO {
             }
     }
 
+    //kullanıcı kısmında tripleri filtrelemek için kullanılır nereden nereye sorusunun cevabıdır
     public List<Trip> getTripByFilteredParameters(String origin, String destination) {
         String sql = "SELECT * FROM trips WHERE origin = ? AND destination = ?";
         List<Trip> trips = new ArrayList<>();

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 public class BusDAO {
 
+    //dbye yeni bir otobüs eklemek için kullanılır.
     public boolean insertBus(Bus bus) {
         String sql = "INSERT INTO buses(bus_id, bus_type, total_seats) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {

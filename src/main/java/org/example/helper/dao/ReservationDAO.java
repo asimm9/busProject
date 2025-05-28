@@ -79,7 +79,7 @@ public class ReservationDAO {
         return null;
     }
 
-    // 4) LIST ALL
+    // 4) dbden user idye göre o userın rezervasyonlarını listeler
     public List<Reservation> getReservationsByUserId(String userId) {
         List<Reservation> list = new ArrayList<>();
         // Sorguyu sadece bu userId’ye ait rezervasyonları almak üzere değiştiriyoruz

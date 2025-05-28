@@ -1,7 +1,6 @@
 package org.example.helper.dao;
 
 import org.example.helper.DatabaseConnector;
-import org.example.models.Bus;
 import org.example.models.Seat;
 
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.util.List;
 
 public class SeatDAO {
 
+    //idye göre tek bir seat getirir dbden
     public static Seat getSeatById(int seatId) {
         String sql = "SELECT * FROM seats WHERE seat_id = ?";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -35,6 +35,7 @@ public class SeatDAO {
         return null;
     }
 
+    //dbden bir otobüse ait olan tüm seatleri getirir ve ArrayList olarak döndürür
     public List<Seat> getAllSeatsByTrip(String busID) {
         String sql = "SELECT * FROM seats WHERE bus_id = ?";
         List<Seat> seats = new ArrayList<>();
@@ -59,18 +60,21 @@ public class SeatDAO {
         }
     }
 
-    public boolean insertsSeatByTrip(List<Seat> seats) {
-        String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, bus_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    //kullanıcı koltuk seçtikten sonra veya koltuğunu iptal ettikten sonra dbde o seati günceller
+    public boolean updatesSeatByTrip(List<Seat> seats) {
+
+        String sql = "UPDATE seats SET is_reserved = ?, user_id = ?, trip_id = ? WHERE seat_id = ? AND bus_id = ?";
+
+
+
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
 
             for (Seat seat : seats) {
-                stmt.setString(1, seat.getSeatID());
-                stmt.setInt(2, seat.getRow());
-                stmt.setInt(3, seat.getColumn());
-                stmt.setInt(4, seat.isReserved() ? 1 : 0);
-                stmt.setString(5, seat.getUserID());
-                stmt.setString(6,seat.getTripID());
-                stmt.setString(7,seat.getBusID());
+                stmt.setInt(1, seat.isReserved() ? 1 : 0);
+                stmt.setString(2, seat.getUserID());
+                stmt.setString(3, seat.getTripID());
+                stmt.setString(4, seat.getSeatID());
+                stmt.setString(5, seat.getBusID());
                 stmt.addBatch();
             }
             int[] result = stmt.executeBatch();
@@ -86,6 +90,7 @@ public class SeatDAO {
         }
     }
 
+    //admin her otobüse göre seatleri otobüs tipi ve koltuk sayısına göre dbye ekler
     public boolean insertSeatByBusID(Seat[][] seats) {
     String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, bus_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 

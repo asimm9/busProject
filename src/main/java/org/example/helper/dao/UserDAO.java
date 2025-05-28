@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDAO {
+
+    //dbye Kullanıcı ekleme kodu
     public boolean createUser(UserModel user) {
         String sql = "INSERT INTO users(id, username, password, email, isadmin) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -24,6 +26,7 @@ public class UserDAO {
         }
     }
 
+    //Giriş yapmak için kullanılıyor username ve password eşleşme kontrolü yapılıyor.
     public UserModel findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -46,6 +49,8 @@ public class UserDAO {
         }
         return null;
     }
+
+    //idye göre dbden tek bir kullanıcı getiriyor
     public static UserModel getUserById(String userId) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,5 +71,34 @@ public class UserDAO {
         return null;
     }
 
+    //userı delete etmek istersek idye göre burdan delete ediyoruz.
+    public boolean deleteUser(String userId) {
+        String sql = "DELETE FROM users WHERE id = ?";
+
+        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, userId);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //userı güncellemek istersek bu metodu kullanarak güncelliyoruz
+    public boolean updateUser(UserModel user) {
+        String sql = "UPDATE users SET username = ?, password = ?, email = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getId());
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
