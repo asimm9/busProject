@@ -3,6 +3,8 @@ package org.example.managers;
 import org.example.helper.dao.BusDAO;
 import org.example.models.Bus;
 
+import java.util.List;
+
 public class BusManager {
 
     private static BusManager instance;
@@ -18,6 +20,14 @@ public class BusManager {
     // sadece admin otobüsleri ekleyebilir.
     public boolean insertBus(Bus bus){
         return busDAO.insertBus(bus);
+    }
+
+    public List<Bus> getAllBuses(){
+        return busDAO.getAllBuses();
+    }
+
+    public boolean deleteBus(Bus bus){
+        return busDAO.deleteBus(bus);
     }
 
 

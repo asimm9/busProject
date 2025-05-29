@@ -20,6 +20,7 @@ import org.example.views.AdminPanel;
 import javafx.scene.layout.VBox.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class AdminPanelController {
@@ -332,9 +333,99 @@ public class AdminPanelController {
 
     }
 
+    //tüm otobüsleri listeler
     public  void handleListBuses(){
+        List<Bus> busList = busManager.getAllBuses();
+
+        if (busList == null || busList.isEmpty()) {
+            showInfo("Hiç Otobüs Bulunamadı");
+        }
+
+        Stage busListStage = new Stage();
+        busListStage.setTitle("Otobüs Listesi");
+
+        VBox layout = new VBox(12);
+        layout.setPadding(new Insets(15));
+        layout.setStyle("-fx-background-color: linear-gradient(to bottom, #f0f2f5, #e9eaf2);");
+
+        for (Bus bus : busList) {
+            VBox busCard = createBusCar(bus);
+            layout.getChildren().add(busCard);
+        }
+        Scene scene = new Scene (new ScrollPane(layout));
+        busListStage.setScene(scene);
+        busListStage.show();
+    }
+
+    //Her bir otobüs için bir car oluşturur
+    private VBox createBusCar(Bus bus) {
+        VBox card = new VBox(7);
+        card.setPadding(new javafx.geometry.Insets(12));
+        card.setSpacing(5);
+        card.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 14;" +
+                        "-fx-border-radius: 14;" +
+                        "-fx-border-color: #d2d2d2;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);"
+        );
+        card.setMaxWidth(360);
+
+        Label idLabel = new Label("ID: " + bus.getBusID());
+        idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        idLabel.setTextFill(Color.web("#3b5998"));
+
+        Label seatLabel = new Label("Total Seats: " + bus.getTotalSeats());
+        seatLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        seatLabel.setTextFill(Color.web("#3b5998"));
+
+        Label busTypeLabel = new Label("Bus Type: " + bus.getBusType());
+        busTypeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        busTypeLabel.setTextFill(Color.web("#3b5998"));
+
+        card.getChildren().addAll(idLabel, seatLabel, busTypeLabel);
+
+        // Sürükleme için değişkenler
+        final double[] mouseAnchorX = new double[1];
+
+        card.setOnMousePressed(event -> {
+            mouseAnchorX[0] = event.getSceneX();
+        });
+
+        card.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mouseAnchorX[0];
+            if (deltaX < 0) { // sola sürükleniyorsa
+                card.setTranslateX(deltaX);
+            }
+        });
+
+        card.setOnMouseReleased(event -> {
+            double deltaX = card.getTranslateX();
+            if (deltaX < -120) { // Eşik değeri, yeterince sola sürüklediyse sil
+                // Önce UI'dan kaldır
+                ((VBox) card.getParent()).getChildren().remove(card);
+
+                // Sonra veri kaynağından sil
+                if (busManager.deleteBus(bus)){
+                    System.out.println("silindiiiiiiiiiiii");
+                } // TripManager'da bu metodu eklemelisin
+
+                // İsteğe bağlı: "Sefer silindi" mesajı göster
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Otobüs Silindi");
+                alert.setHeaderText(null);
+                alert.setContentText("Otobüs başarıyla silindi.");
+                alert.showAndWait();
+            } else {
+                // Yeterince sürüklenmediyse kart eski yerine dönsün
+                card.setTranslateX(0);
+            }
+        });
+        return card;
 
     }
 
+    
 
 }
