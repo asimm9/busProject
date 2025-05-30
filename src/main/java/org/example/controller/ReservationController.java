@@ -1,7 +1,9 @@
 package org.example.controller;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
@@ -12,6 +14,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 import org.example.managers.ReservationManager;
 import org.example.managers.TripManager;
 import org.example.models.Reservation;
@@ -129,4 +132,110 @@ public class ReservationController {
 
 
     }
+
+    public void handleCancelReservation() {
+
+    }
+
+    public void handleListReservation(UserModel user) {
+        List<Reservation> reservationList =  reservationManager.getReservations(user.getId());
+
+        if(reservationList == null || reservationList.isEmpty()){
+            showInfo("Hiç bir rezervasyon bulunamadı.");
+            return;
+        }
+
+        Stage listReservationStage = new Stage();
+        listReservationStage.setTitle("Tüm rezervasyonlar.");
+
+        VBox cardBox = new VBox(12);
+        cardBox.setPadding(new Insets(15));
+        cardBox.setStyle("-fx-background-color: linear-gradient(to bottom, #f0f2f5, #e9eaf2);");
+
+        for (Reservation reservation : reservationList) {
+            VBox card = createReservationCard(reservation);
+            cardBox.getChildren().add(card);
+        }
+
+        Scene scene = new Scene(new ScrollPane(cardBox), 430, 450);
+        listReservationStage.setScene(scene);
+        listReservationStage.show();
+    }
+
+    private VBox createReservationCard(Reservation reservation) {
+        VBox card = new VBox(7);
+        card.setPadding(new Insets(12));
+        card.setSpacing(5);
+        card.setStyle("-fx-background-color: white;" +
+                "-fx-background-radius: 14;" +
+                "-fx-border-radius: 14;" +
+                "-fx-border-color: #d2d2d2;" +
+                "-fx-border-width: 1;" +
+                "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);");
+
+        card.setMaxWidth(360);
+
+        Label userID = new Label(reservation.getUser().getId());
+        userID.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        userID.setTextFill(Color.web("#3b5998"));
+
+        Label tripLabel = new Label(reservation.getTrip().getOrigin() + " => " + reservation.getTrip().getDestination());
+        tripLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        tripLabel.setTextFill(Color.web("#3b5998"));
+
+        Label seatLabel = new Label(" null değer");
+        seatLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        seatLabel.setTextFill(Color.web("#3b5998"));
+
+        card.getChildren().addAll(userID, tripLabel, seatLabel);
+
+        // Sürükleme için değişkenler
+        final double[] mouseAnchorX = new double[1];
+
+        card.setOnMousePressed(event -> {
+            mouseAnchorX[0] = event.getSceneX();
+        });
+
+        card.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mouseAnchorX[0];
+            if (deltaX < 0) { // sola sürükleniyorsa
+                card.setTranslateX(deltaX);
+            }
+        });
+
+        card.setOnMouseReleased(event -> {
+            double deltaX = card.getTranslateX();
+            if (deltaX < -120) { // Eşik değeri, yeterince sola sürüklediyse sil
+                // Önce UI'dan kaldır
+                ((VBox) card.getParent()).getChildren().remove(card);
+
+                // Sonra veri kaynağından sil
+                if (reservationManager.cancelReservation(reservation)) {
+                    System.out.println("silindiiiiiiiiiiii");
+                } // TripManager'da bu metodu eklemelisin
+
+                // İsteğe bağlı: "Sefer silindi" mesajı göster
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Rezervasyon Silindi");
+                alert.setHeaderText(null);
+                alert.setContentText("Rezervasyon başarıyla silindi.");
+                alert.showAndWait();
+            } else {
+                // Yeterince sürüklenmediyse kart eski yerine dönsün
+                card.setTranslateX(0);
+            }
+        });
+
+        return card;
+    }
+
+    private void showInfo(String text) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle("Tüm reservasyonlar");
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        alert.showAndWait();
+    }
+
+
 }
