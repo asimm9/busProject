@@ -120,12 +120,12 @@ public class AdminPanelController {
         card.setPadding(new javafx.geometry.Insets(12));
         card.setSpacing(5);
         card.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-background-radius: 14;" +
-                        "-fx-border-radius: 14;" +
-                        "-fx-border-color: #d2d2d2;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);"
+                    "-fx-background-color: white;" +
+                            "-fx-background-radius: 14;" +
+                            "-fx-border-radius: 14;" +
+                            "-fx-border-color: #d2d2d2;" +
+                            "-fx-border-width: 1;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);"
         );
         card.setMaxWidth(360);
 

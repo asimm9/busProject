@@ -33,10 +33,9 @@ public class UserDashboard {
     // Seçili sefer (tıklanınca güncellenir)
     public Trip selectedTrip = null;
 
-
     public UserDashboard(UserModel user) {
         this.user = user;
-        this.reservationController = new ReservationController(this,user);
+        this.reservationController = new ReservationController(this, user);
         show();
     }
 
@@ -55,9 +54,20 @@ public class UserDashboard {
                 CornerRadii.EMPTY, Insets.EMPTY);
         root.setBackground(new Background(backgroundFill));
 
+        // Hoş geldiniz + Rezervasyonlarım butonu
         Label welcomeLabel = new Label("Hoş geldiniz, " + user.getUsername());
         welcomeLabel.setTextFill(Color.WHITE);
         welcomeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+
+        Button myReservationsButton = new Button("Rezervasyonlarım");
+        myReservationsButton.setOnAction(e -> reservationController.handleListReservation(user)); // Dilersen ekleyebilirsin
+
+        Region spacer = new Region(); // Boşluk bırakmak için
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox welcomeBox = new HBox(10, welcomeLabel, spacer, myReservationsButton);
+        welcomeBox.setAlignment(Pos.CENTER_LEFT);
+        welcomeBox.setMaxWidth(Double.MAX_VALUE);
 
         Label infoLabel = new Label("Eposta: " + user.getEmail());
         infoLabel.setTextFill(Color.WHITE);
@@ -106,11 +116,11 @@ public class UserDashboard {
         reserveButton.setDisable(true); // Başta disable
 
         // Butonlar controller metodlarına yönlendirir
-        searchTripButton.setOnAction(e -> reservationController.handleSearchTrips());//sefer arama butonu
-        reserveButton.setOnAction(e -> reservationController.handleReservation());//rezervasyon yapma butonu
+        searchTripButton.setOnAction(e -> reservationController.handleSearchTrips()); // sefer arama butonu
+        reserveButton.setOnAction(e -> reservationController.handleReservation()); // rezervasyon yapma butonu
 
         root.getChildren().addAll(
-                welcomeLabel,
+                welcomeBox,
                 infoLabel,
                 transportSelector,
                 selectionArea,
@@ -134,8 +144,8 @@ public class UserDashboard {
             if (node instanceof VBox) {
                 ((VBox) node).setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
 
-                //carda tıklandığında koltuk seçme ekranını aç.
-                seatLayout = new SeatLayout(selectedTrip,user);
+                // carda tıklandığında koltuk seçme ekranını aç.
+                seatLayout = new SeatLayout(selectedTrip, user);
                 Stage stage = new Stage();
                 seatLayout.start(stage);
             }
