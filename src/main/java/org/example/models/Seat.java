@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Seat {
     private String seatID;
-    private String busID;
+    private String vehicleID;
     private String tripID;
     private String userID;
     private int column;
@@ -18,7 +18,7 @@ public class Seat {
                 ", isReserved=" + isReserved +
                 ", row=" + row +
                 ", column=" + column +
-                ", busID='" + busID + '\'' +
+                ", busID='" + vehicleID + '\'' +
                 ", tripID='" + tripID + '\'' +
                 ", userID='" + userID + '\'' +
                 '}';
@@ -28,22 +28,22 @@ public class Seat {
     public boolean equals(Object o) {
         if (!(o instanceof Seat seat)) return false;
         return isReserved() == seat.isReserved() && getRow() == seat.getRow() && getColumn() == seat.getColumn()
-                && Objects.equals(getSeatID(), seat.getSeatID()) && Objects.equals(getBusID(), seat.getBusID())
+                && Objects.equals(getSeatID(), seat.getSeatID()) && Objects.equals(getVehicleID(), seat.getVehicleID())
                 && Objects.equals(getTripID(), seat.getTripID()) && Objects.equals(getUserID(), seat.getUserID());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSeatID(), isReserved(), getRow(), getColumn(), getBusID(), getTripID(), getUserID());
+        return Objects.hash(getSeatID(), isReserved(), getRow(), getColumn(), getVehicleID(), getTripID(), getUserID());
     }
 
     public String getUserID() {return userID;}
 
     public void setUserID(String userID) {this.userID = userID;}
 
-    public String getBusID() {return busID;}
+    public String getVehicleID() {return vehicleID;}
 
-    public void setBusID(String busID) {this.busID = busID;}
+    public void setVehicleID(String vehicleID) {this.vehicleID = vehicleID;}
 
     public String getTripID() {return tripID;}
 

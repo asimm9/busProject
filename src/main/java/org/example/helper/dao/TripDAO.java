@@ -2,9 +2,9 @@ package org.example.helper.dao;
 
 import javafx.scene.control.DatePicker;
 import org.example.helper.DatabaseConnector;
-import org.example.models.Bus;
-import org.example.models.Seat;
 import org.example.models.Trip;
+import org.example.models.Veihcle;
+import org.example.models.VeihcleType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,14 +18,14 @@ public class TripDAO {
 
     //dbye yeni bir trip eklemek için kullanılır
     public boolean insertTrip(Trip trip) {
-        String sql = "INSERT INTO trips(trip_id, origin, destination, departure_time, time, bus_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO trips(trip_id, origin, destination, departure_time, time, veihcle_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, trip.getTripID());
             stmt.setString(2, trip.getOrigin());
             stmt.setString(3, trip.getDestination());
             stmt.setString(4, trip.getDepartureTime().toString());
             stmt.setString(5, trip.getTime().toString());
-            stmt.setString(6, trip.getBus().getBusID());
+            stmt.setString(6, trip.getVehicle().getId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,22 +51,24 @@ public class TripDAO {
         List<Trip> trips = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql) ) {
             ResultSet rs = stmt.executeQuery();
+            VeichleDAO veichleDAO = new VeichleDAO();
             while (rs.next()) {
 
                 String tripID = rs.getString("trip_id");
                 String origin = rs.getString("origin");
                 String destination = rs.getString("destination");
-
                 DatePicker departureTime = new DatePicker();
-                int busId = rs.getInt("bus_id");
+                LocalDateTime time = LocalDateTime.parse(rs.getString("time"));
+                String busId = rs.getString("veihcle_id");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
                 trip.setOrigin(origin);
                 trip.setDestination(destination);
                 trip.setDepartureTime(departureTime);
-                Bus bus =new Bus();
-                trip.setBus(bus);
+                Veihcle veihcle = veichleDAO.getVehicle(busId, VeihcleType.Bus);
+                trip.setVehicle(veihcle);
+                trip.setTime(time);
                 trips.add(trip);
             }
             return trips;
@@ -83,17 +85,16 @@ public class TripDAO {
             try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
                 stmt.setString(1, tripID);
                 ResultSet rs = stmt.executeQuery();
+                VeichleDAO veichleDAO = new VeichleDAO();
                 if (rs.next()) {
                     trip = new Trip();
                     trip.setTripID(tripID);
                     trip.setOrigin(rs.getString("origin"));
                     trip.setDestination(rs.getString("destination"));
-                    DatePicker departureTime = new DatePicker();
-                    trip.setDepartureTime(departureTime);
+                    trip.setDepartureTime(new DatePicker());
                     trip.setTime(LocalDateTime.parse(rs.getString("time")));
-                    int busId = rs.getInt("bus_id");
-                    Bus bus = new Bus();
-                    trip.setBus(bus);
+                    String veihcleId = rs.getString("veihcle_id");
+                    trip.setVehicle(veichleDAO.getVehicle(veihcleId,VeihcleType.Plane));
                 }
                 return trip;
             } catch (SQLException e) {
@@ -111,11 +112,12 @@ public class TripDAO {
             statement.setString(1, origin);
             statement.setString(2, destination);
             ResultSet rs = statement.executeQuery();
+            VeichleDAO veichleDAO = new VeichleDAO();
             while (rs.next()) {
                 String tripID = rs.getString("trip_id");
                 String originValue = rs.getString("origin");
                 String destinationValue = rs.getString("destination");
-                String busId = rs.getString("bus_id");
+                String veihcleIdId = rs.getString("veihcle_id");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
@@ -123,9 +125,8 @@ public class TripDAO {
                 trip.setDestination(destinationValue);
                 DatePicker departureTime = new DatePicker();
                 trip.setDepartureTime(departureTime);
-                Bus bus = new Bus();
-                bus.setBusID(busId);
-                trip.setBus(bus);
+                Veihcle veihcle = veichleDAO.getVehicle(veihcleIdId,VeihcleType.Bus);
+                trip.setVehicle(veihcle);
                 trips.add(trip);
             }
         } catch (SQLException e) {

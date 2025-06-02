@@ -10,14 +10,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.managers.BusManager;
+import org.example.managers.VeichleManager;
 import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
-import org.example.models.Bus;
-import org.example.models.Seat;
-import org.example.models.Trip;
+import org.example.models.*;
 import org.example.views.AdminPanel;
-import javafx.scene.layout.VBox.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +24,7 @@ public class AdminPanelController {
 
     private final AdminPanel view;
     private TripManager tripManager = TripManager.getInstance();
-    private BusManager busManager = BusManager.getInstance();
+    private VeichleManager veichleManager = VeichleManager.getInstance();
     private SeatManager seatManager = SeatManager.getInstance();
 
     //viewa bağlanma kısmı controller constructerında yapılıyor.
@@ -39,7 +36,7 @@ public class AdminPanelController {
     public void handleBusSelected() {
         view.getBusCard().setVisible(true);
         view.getPlaneCard().setVisible(false);
-
+        view.setBus(true);
         view.getBusButton().setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
         view.getPlaneButton().setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");
     }
@@ -48,7 +45,7 @@ public class AdminPanelController {
     public void handlePlaneSelected() {
         view.getBusCard().setVisible(false);
         view.getPlaneCard().setVisible(true);
-
+        view.setBus(false);
         view.getPlaneButton().setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
         view.getBusButton().setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");
     }
@@ -63,18 +60,14 @@ public class AdminPanelController {
 
         if (!origin.isEmpty() && !destination.isEmpty() /*&& !date.isEmpty() && !now.isEmpty()*/ && !busID.isEmpty()) {
             Trip trip = new Trip();
-            Bus bus = new Bus();
-            bus.setBusID(busID);
-            bus.setBusType("s");
-            bus.setSeatLayout(null);
-            bus.setTotalSeats(23);
+            Veihcle veihcle = veichleManager.getVeihcleById(busID,VeihcleType.Bus);
 
             trip.setTripID(UUID.randomUUID().toString());
             trip.setOrigin(origin);
             trip.setDestination(destination);
             trip.setDepartureTime(date);
             trip.setTime(now);
-            trip.setBus(bus);
+            trip.setVehicle(veihcle);
             if (tripManager.createTrip(trip)){
                 view.getMessageLabel().setText("Sefer başarıyla eklendi!");
             }else {
@@ -139,7 +132,7 @@ public class AdminPanelController {
         Label dateLabel = new Label("Tarih & Saat: " + (trip.getDepartureTime() != null ? trip.getDepartureTime().toString() : "-"));
         dateLabel.setFont(Font.font("Arial", 12));
 
-        String transportInfo = trip.getBus().toString();
+        String transportInfo = trip.getVehicle().toString();
         Label transportLabel = new Label(transportInfo);
         transportLabel.setFont(Font.font("Arial", 12));
         transportLabel.setTextFill(Color.web("#8b0033"));
@@ -196,36 +189,43 @@ public class AdminPanelController {
     }
 
     // Bus eklemek için bu metod kullanılıyor
-    public void handleInsertBus() {
+    public void handleInsertVeihcle() {
 
         Stage formStage = new Stage();
-        formStage.setTitle("Otobüs Ekle");
-
+        if (view.isBus()) {
+            formStage.setTitle("Otobüs Ekle");
+        }else {
+            formStage.setTitle("Uçak Ekle");
+        }
         // Form elemanlarını oluştur
         Label plakaLabel = new Label("Plaka:");
         TextField idField = new TextField();
 
-        Label koltukLabel = new Label("type");
+        Label koltukLabel = new Label("Koltuk tipi");
         TextField busTypeField = new TextField();
 
-        Label totalSeatsLabel = new Label("Total Seats:");
+        Label totalSeatsLabel = new Label("Toplam Koltuk:");
         TextField totalSeatsField = new TextField();
         final boolean[] result = new boolean[1];
         Button saveButton = new Button("Kaydet");
         saveButton.setOnAction(event -> {
             String id = idField.getText();
-            String busType = busTypeField.getText();
+            String seatType = busTypeField.getText();
             String totalSeats = totalSeatsField.getText();
-            Bus bus = new Bus();
-            bus.setBusType(busType);
-            bus.setBusID(id);
-
-            bus.setTotalSeats(Integer.parseInt(totalSeats));
+            Veihcle veihcle;
+            if (view.isBus()){
+                veihcle = new Bus();
+            }else{
+                veihcle = new Plane();
+            }
+            veihcle.setSeatType(seatType);
+            veihcle.setId(id);
+            veihcle.setTotalSeats(Integer.parseInt(totalSeats));
             int row= 0;
             int column = 0;
             Seat[][] seats;
             if(Integer.parseInt(totalSeats) == 36){
-                if (busType.equals("2+2")){//2+2
+                if (seatType.equals("2+2")){//2+2
                     seats = new Seat[9][4];
                     int seatNumber= 1;
                     for (int rowCount = 0; rowCount < 9; rowCount++) {
@@ -265,7 +265,7 @@ public class AdminPanelController {
                     seatManager.insertSeatByBus(seats);
                 }
             } else  {
-                if (busType.equals("2+2")){//48
+                if (seatType.equals("2+2")){//48
                     seats = new Seat[12][4];
                     int seatNumber= 1;
                     for (int rowCount = 0; rowCount < 12; rowCount++) {
@@ -308,8 +308,8 @@ public class AdminPanelController {
 
 
 
-            bus.setSeatLayout(new Seat[3][3]);
-             if(busManager.insertBus(bus)){
+            veihcle.setSeatLayout(new Seat[3][3]);
+             if(veichleManager.insertVeichle(veihcle)){
                  Alert alert = new Alert(Alert.AlertType.INFORMATION);
                  alert.setTitle("Bus Eklendi");
                  formStage.close();
@@ -335,9 +335,9 @@ public class AdminPanelController {
 
     //tüm otobüsleri listeler
     public  void handleListBuses(){
-        List<Bus> busList = busManager.getAllBuses();
+        List<Veihcle> veihcleList = veichleManager.getAllVeichles();
 
-        if (busList == null || busList.isEmpty()) {
+        if (veihcleList == null || veihcleList.isEmpty()) {
             showInfo("Hiç Otobüs Bulunamadı");
         }
 
@@ -348,8 +348,8 @@ public class AdminPanelController {
         layout.setPadding(new Insets(15));
         layout.setStyle("-fx-background-color: linear-gradient(to bottom, #f0f2f5, #e9eaf2);");
 
-        for (Bus bus : busList) {
-            VBox busCard = createBusCar(bus);
+        for (Veihcle veihcle : veihcleList) {
+            VBox busCard = createBusCar(veihcle);
             layout.getChildren().add(busCard);
         }
         Scene scene = new Scene (new ScrollPane(layout));
@@ -358,7 +358,7 @@ public class AdminPanelController {
     }
 
     //Her bir otobüs için bir car oluşturur
-    private VBox createBusCar(Bus bus) {
+    private VBox createBusCar(Veihcle  veihcle) {
         VBox card = new VBox(7);
         card.setPadding(new javafx.geometry.Insets(12));
         card.setSpacing(5);
@@ -372,15 +372,15 @@ public class AdminPanelController {
         );
         card.setMaxWidth(360);
 
-        Label idLabel = new Label("ID: " + bus.getBusID());
+        Label idLabel = new Label("ID: " + veihcle.getId());
         idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         idLabel.setTextFill(Color.web("#3b5998"));
 
-        Label seatLabel = new Label("Total Seats: " + bus.getTotalSeats());
+        Label seatLabel = new Label("Total Seats: " + veihcle.getTotalSeats());
         seatLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         seatLabel.setTextFill(Color.web("#3b5998"));
 
-        Label busTypeLabel = new Label("Bus Type: " + bus.getBusType());
+        Label busTypeLabel = new Label("Bus Type: " + veihcle.getSeatType());
         busTypeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         busTypeLabel.setTextFill(Color.web("#3b5998"));
 
@@ -407,7 +407,7 @@ public class AdminPanelController {
                 ((VBox) card.getParent()).getChildren().remove(card);
 
                 // Sonra veri kaynağından sil
-                if (busManager.deleteBus(bus)){
+                if (veichleManager.deleteVeihcle(veihcle)){
                     System.out.println("silindiiiiiiiiiiii");
                 } // TripManager'da bu metodu eklemelisin
 

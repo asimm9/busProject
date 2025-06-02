@@ -135,7 +135,7 @@ public class UserDashboard {
         stage.show();
     }
 
-    // Kart tıklandığında çağrılır
+    // Sefer Kartına tıklandığında çağrılır
     public void setSelectedTrip(Trip trip, VBox selectedCard) {
         this.selectedTrip = trip;
 

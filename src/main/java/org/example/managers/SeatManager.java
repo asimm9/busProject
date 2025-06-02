@@ -24,4 +24,9 @@ public class SeatManager {
     public boolean insertSeatByBus(Seat[][] seats) {
         return seatDAO.insertSeatByBusID(seats);
     }
+
+    public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
+        return seatDAO.getSeatByTripAndUserID(tripID, userID);
+    }
+
 }
