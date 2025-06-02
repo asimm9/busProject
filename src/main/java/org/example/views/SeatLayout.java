@@ -34,6 +34,7 @@ public class SeatLayout {
     public List<Seat> allSeats;
 
 
+    //contrtuctor
     public SeatLayout(Trip trip, UserModel user) {
         controller = new SeatLayoutController(this);
         secilenKoltuklar = new ArrayList<>();
@@ -43,20 +44,9 @@ public class SeatLayout {
         this.user = user;
     }
 
+    //Ana iskelet burda oluturuluyor
     public void start(Stage primaryStage) {
         root = new BorderPane();
-
-        HBox secimBox = new HBox(20);
-        secimBox.setPadding(new Insets(10));
-        secimBox.setAlignment(Pos.CENTER);
-
-        Button btn2plus1 = new Button("2+1 Otobüs Düzeni");
-        Button btn2plus2 = new Button("2+2 Otobüs Düzeni");
-
-        btn2plus1.setPrefWidth(150);
-        btn2plus2.setPrefWidth(150);
-
-        secimBox.getChildren().addAll(btn2plus1, btn2plus2);
 
         centerBox = new VBox(20);
         centerBox.setAlignment(Pos.CENTER);
@@ -67,7 +57,7 @@ public class SeatLayout {
         scrollPane.setPrefViewportHeight(500);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
-        olusturKoltukGrid(true); // ilk gösterim 2+1
+        olusturKoltukGrid(); // ilk gösterim 2+1
 
         confirmButton = new Button("Onayla");
         confirmButton.setPrefWidth(200);
@@ -77,11 +67,7 @@ public class SeatLayout {
 
         centerBox.getChildren().addAll(scrollPane, confirmButton);
 
-        root.setTop(secimBox);
         root.setCenter(centerBox);
-
-        btn2plus1.setOnAction(e -> olusturKoltukGrid(true));
-        btn2plus2.setOnAction(e -> olusturKoltukGrid(false));
 
         Scene scene = new Scene(root, 700, 600);
         primaryStage.setScene(scene);
@@ -89,7 +75,12 @@ public class SeatLayout {
         primaryStage.show();
     }
 
-    private void olusturKoltukGrid(boolean ikiArtıBir) {
+    //Koltukların grid layout kısmı oluşturuluyor ızgara formatındaki o ekran
+    private void olusturKoltukGrid() {
+        boolean ikiArtıBir = false;
+        if (trip.getVehicle().getBusType().equals("2+1")) {
+            ikiArtıBir = true;
+        }
 
         //hem buton listesi hem de koltuk listeri sıfırlandı
         secilenKoltuklar.clear();
@@ -103,8 +94,19 @@ public class SeatLayout {
         grid.setAlignment(Pos.CENTER);
 
 
+        int siraSayisi = 0; //row sayısı
+        if (trip.getVehicle().getBusType().equals("2+1") && trip.getVehicle().getTotalSeats() == 48) {
+            siraSayisi = 16;
+        }else if (trip.getVehicle().getBusType().equals("2+1") && trip.getVehicle().getTotalSeats() == 36) {
+            siraSayisi = 12;
+        }else if (trip.getVehicle().getBusType().equals("2+2") && trip.getVehicle().getTotalSeats() == 48) {
+            siraSayisi = 12;
+        }else if (trip.getVehicle().getBusType().equals("2+2") && trip.getVehicle().getTotalSeats() == 36) {
+            siraSayisi = 9;
+        }else {
+            throw new Error();
+        }
 
-        int siraSayisi = 10; //row sayısı
         int koltukNumarasi = 1; // koltuk numarasını 1den başlatmak için
 
         grid.getChildren().clear();
@@ -151,6 +153,7 @@ public class SeatLayout {
         scrollPane.setContent(grid); // Scroll içeriği güncelle
     }
 
+    // her bir koltuk için bir button bu metodda oluşturulup return ediliyor
     private Button createSeatButton(String number) {
         Button button = new Button();
         button.setPrefSize(80, 60); // Büyük koltuk boyutu
@@ -173,10 +176,12 @@ public class SeatLayout {
 
         return button;
     }
+
+    // burda da her bir buton için bir adet Seat nesenesi oluşturulup koltukla eşleştiriliyor.
     private Seat createSeatInstance(String seatID,int row, int column) {  //seatID koltuk numarasına referans eder.
         Seat seat = new Seat();
         seat.setTripID(trip.getTripID());
-        seat.setBusID(trip.getBus().getBusID());
+        seat.setBusID(trip.getVehicle().getBusID());
         seat.setUserID(user.getId());
         seat.setSeatID(seatID);
         seat.setReserved(false);
@@ -185,6 +190,7 @@ public class SeatLayout {
         return seat;
     }
 
+    //koltuğun seçilip seçilmemsi burda kontrol ediliyor.
     private void ayarlaSecimDavranisi(Button button,Seat seat) {
         button.setOnAction(e -> {
             if (!button.isDisabled()) {

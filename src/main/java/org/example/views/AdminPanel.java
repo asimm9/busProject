@@ -34,6 +34,11 @@ public class AdminPanel {
     private ToggleButton busButton;
     private ToggleButton planeButton;
 
+    public boolean isBus() {return isBus;}
+    public void setBus(boolean bus) {isBus = bus;}
+
+    private boolean isBus;
+
 
     public AdminPanel(UserModel adminUser) {
         this.adminUser = adminUser;
@@ -144,7 +149,7 @@ public class AdminPanel {
         addBusButton.setTextFill(Color.web("#8b0033"));
         addBusButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
         addBusButton.setPadding(new Insets(10, 25, 10, 25));
-        addBusButton.setOnAction(actionEvent -> controller.handleInsertBus());
+        addBusButton.setOnAction(actionEvent -> controller.handleInsertVeihcle());
 
         //busları listleme butonu
         Button listBusesButton = new Button("Otobüsleri Listele");

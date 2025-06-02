@@ -25,7 +25,7 @@ public class SeatDAO {
                 seat.setColumn(rs.getInt("column_number"));
                 seat.setReserved(rs.getBoolean("is_reserved"));
                 seat.setUserID(rs.getString("user_id"));
-                seat.setBusID(rs.getString("bus_id"));
+                seat.setBusID(rs.getString("veihcle_id"));
                 seat.setTripID(rs.getString("trip_id"));
                 return seat;
             }
@@ -74,7 +74,7 @@ public class SeatDAO {
                 stmt.setString(2, seat.getUserID());
                 stmt.setString(3, seat.getTripID());
                 stmt.setString(4, seat.getSeatID());
-                stmt.setString(5, seat.getBusID());
+                stmt.setString(5, seat.getVehicleID());
                 stmt.addBatch();
             }
             int[] result = stmt.executeBatch();
@@ -103,7 +103,7 @@ public class SeatDAO {
                 stmt.setInt(4,  seats[row][column].isReserved() ? 1 : 0);
                 stmt.setString(5,  seats[row][column].getUserID());
                 stmt.setString(6, seats[row][column].getTripID());
-                stmt.setString(7, seats[row][column].getBusID());
+                stmt.setString(7, seats[row][column].getVehicleID());
                 stmt.addBatch();
             }
 
@@ -120,4 +120,31 @@ public class SeatDAO {
         return false;
     }
     }
+
+    public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
+        String sql = "SELECT * FROM seats WHERE trip_id = ? AND user_id = ?";
+        List<Seat> seatList = new ArrayList();
+        try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, tripID);
+            stmt.setString(2, userID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Seat seat = new Seat();
+                seat.setSeatID(rs.getString("seat_id"));
+                seat.setRow(rs.getInt("row_number"));
+                seat.setColumn(rs.getInt("column_number"));
+                seat.setReserved(rs.getBoolean("is_reserved"));
+                seat.setUserID(rs.getString("user_id"));
+                seat.setBusID(rs.getString("bus_id"));
+                seat.setTripID(rs.getString("trip_id"));
+                seat.setSeatID(rs.getString("seat_id"));
+                seatList.add(seat);
+            }
+            return seatList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

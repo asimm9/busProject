@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.example.managers.ReservationManager;
+import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
 import org.example.models.Reservation;
 import org.example.models.Seat;
@@ -33,8 +34,9 @@ public class ReservationController {
 
     private final UserDashboard view;
     private final UserModel user;
-    private final TripManager tripManager = new TripManager();
+    private final TripManager tripManager = TripManager.getInstance();
     private final ReservationManager reservationManager =  ReservationManager.getInstance();
+    private final SeatManager seatManager = SeatManager.getInstance();
 
 
     public ReservationController(UserDashboard view, UserModel user) {
@@ -109,15 +111,19 @@ public class ReservationController {
 
         if(view.seatLayout.secilenKoltuklar.size() != 0){
 
-            Reservation reservation = new Reservation();
-            reservation.setId(UUID.randomUUID().toString());
-            reservation.setUser(user);
-            reservation.setTrip(selected);
-            Seat seat = new Seat();
-            reservation.setSeat(seat);
-            LocalDateTime dateTime = LocalDateTime.now();
-            reservation.setReservationDateTime(dateTime);
-            reservationManager.createReservation(reservation);
+            List<Seat> seatList = seatManager.getSeatByTripAndUserID(selected.getTripID(),user.getId());
+            for (int i = 0; i < seatList.size(); i++) {
+                Seat seat = seatList.get(i);
+                Reservation reservation = new Reservation();
+                reservation.setId(UUID.randomUUID().toString());
+                reservation.setUser(user);
+                reservation.setTrip(selected);
+                reservation.setSeat(seat);
+                LocalDateTime dateTime = LocalDateTime.now();
+                reservation.setReservationDateTime(dateTime);
+                reservationManager.createReservation(reservation);
+            }
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Rezervasyon");
             alert.setHeaderText(null);

@@ -16,11 +16,12 @@ public class DatabaseInitializer {
                     ");"
             );
 
-            // BUSES TABLE
-            statement.execute("CREATE TABLE IF NOT EXISTS buses (" +
-                    "bus_id TEXT PRIMARY KEY, " +
-                    "bus_type TEXT, " +
-                    "total_seats INTEGER" +
+            // VEHICLE TABLE
+            statement.execute("CREATE TABLE IF NOT EXISTS vehicles (" +
+                    "vehicle_id TEXT PRIMARY KEY, " +
+                    "seat_type TEXT, " +
+                    "total_seats INTEGER, " +
+                    "vehicle_type TEXT" +
                     ");"
             );
 
@@ -31,8 +32,8 @@ public class DatabaseInitializer {
                     "destination TEXT NOT NULL, " +
                     "departure_time TEXT NOT NULL, " +
                     "time TEXT NOT NULL, " +
-                    "bus_id INTEGER, " +
-                    "FOREIGN KEY(bus_id) REFERENCES buses(bus_id)" +
+                    "vehicle_id TEXT, " +
+                    "FOREIGN KEY(vehicle_id) REFERENCES vehicles(vehicle_id)" +
                     ");"
             );
 
@@ -44,9 +45,9 @@ public class DatabaseInitializer {
                     "is_reserved INTEGER, " +
                     "user_id TEXT, " +
                     "trip_id TEXT, " +
-                    "bus_id TEXT, " +
+                    "vehicle_id TEXT, " +
                     "FOREIGN KEY(trip_id) REFERENCES trips(trip_id), " +
-                    "FOREIGN KEY(bus_id) REFERENCES buses(bus_id), " +
+                    "FOREIGN KEY(vehicle_id) REFERENCES vehicles(vehicle_id), " +
                     "FOREIGN KEY(user_id) REFERENCES users(id)"+
                     ");"
             );

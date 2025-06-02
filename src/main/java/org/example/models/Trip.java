@@ -13,7 +13,7 @@ public class Trip {
     private String destination;
     private DatePicker departureTime;
     private LocalDateTime time;
-    private Bus bus;
+    private Vehicle vehicle;
     private List<Seat> seatList;
 
 
@@ -24,7 +24,7 @@ public class Trip {
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
                 ", departureTime=" + departureTime +
-                ", bus=" + bus +
+                ", bus=" + vehicle +
                 ", seatList=" + seatList +
                 ", time=" + time +
                 '}';
@@ -35,13 +35,13 @@ public class Trip {
         if (!(o instanceof Trip trip)) return false;
         return Objects.equals(getTripID(), trip.getTripID()) && Objects.equals(getOrigin(), trip.getOrigin())
                 && Objects.equals(getDestination(), trip.getDestination()) && Objects.equals(getDepartureTime(),
-                trip.getDepartureTime()) && Objects.equals(getTime(), trip.getTime()) && Objects.equals(getBus(), trip.getBus())
+                trip.getDepartureTime()) && Objects.equals(getTime(), trip.getTime()) && Objects.equals(getVehicle(), trip.getVehicle())
                 && Objects.equals(getSeatList(), trip.getSeatList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTripID(), getOrigin(), getDestination(), getDepartureTime(), getTime(), getBus(), getSeatList());
+        return Objects.hash(getTripID(), getOrigin(), getDestination(), getDepartureTime(), getTime(), getVehicle(), getSeatList());
     }
 
 
@@ -85,12 +85,10 @@ public class Trip {
         this.departureTime = departureTime;
     }
 
-    public Bus getBus() {
-        return bus;
-    }
+    public Vehicle getVehicle() {return vehicle;}
 
-    public void setBus(Bus bus) {
-        this.bus = bus;
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     public List<Seat> getSeatList() {

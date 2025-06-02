@@ -39,7 +39,6 @@ public class UserDAO {
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setEmail(rs.getString("email"));
-
                 user.setAdmin(rs.getBoolean("isadmin"));
                 System.out.println(user.toString());
                 return user;
