@@ -3,8 +3,8 @@ package org.example.helper.dao;
 import javafx.scene.control.DatePicker;
 import org.example.helper.DatabaseConnector;
 import org.example.models.Trip;
-import org.example.models.Veihcle;
-import org.example.models.VeihcleType;
+import org.example.models.Vehicle;
+import org.example.models.VehicleType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,7 +51,7 @@ public class TripDAO {
         List<Trip> trips = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql) ) {
             ResultSet rs = stmt.executeQuery();
-            VeichleDAO veichleDAO = new VeichleDAO();
+            VehicleDAO vehicleDAO = new VehicleDAO();
             while (rs.next()) {
 
                 String tripID = rs.getString("trip_id");
@@ -59,15 +59,15 @@ public class TripDAO {
                 String destination = rs.getString("destination");
                 DatePicker departureTime = new DatePicker();
                 LocalDateTime time = LocalDateTime.parse(rs.getString("time"));
-                String busId = rs.getString("veihcle_id");
+                String busId = rs.getString("vehicle_id");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
                 trip.setOrigin(origin);
                 trip.setDestination(destination);
                 trip.setDepartureTime(departureTime);
-                Veihcle veihcle = veichleDAO.getVehicle(busId, VeihcleType.Bus);
-                trip.setVehicle(veihcle);
+                Vehicle vehicle = vehicleDAO.getVehicle(busId, VehicleType.Bus);
+                trip.setVehicle(vehicle);
                 trip.setTime(time);
                 trips.add(trip);
             }
@@ -85,7 +85,7 @@ public class TripDAO {
             try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
                 stmt.setString(1, tripID);
                 ResultSet rs = stmt.executeQuery();
-                VeichleDAO veichleDAO = new VeichleDAO();
+                VehicleDAO vehicleDAO = new VehicleDAO();
                 if (rs.next()) {
                     trip = new Trip();
                     trip.setTripID(tripID);
@@ -93,8 +93,8 @@ public class TripDAO {
                     trip.setDestination(rs.getString("destination"));
                     trip.setDepartureTime(new DatePicker());
                     trip.setTime(LocalDateTime.parse(rs.getString("time")));
-                    String veihcleId = rs.getString("veihcle_id");
-                    trip.setVehicle(veichleDAO.getVehicle(veihcleId,VeihcleType.Plane));
+                    String vehicleId = rs.getString("vehicle_id");
+                    trip.setVehicle(vehicleDAO.getVehicle(vehicleId,VehicleType.Plane));
                 }
                 return trip;
             } catch (SQLException e) {
@@ -112,12 +112,12 @@ public class TripDAO {
             statement.setString(1, origin);
             statement.setString(2, destination);
             ResultSet rs = statement.executeQuery();
-            VeichleDAO veichleDAO = new VeichleDAO();
+            VehicleDAO vehicleDAO = new VehicleDAO();
             while (rs.next()) {
                 String tripID = rs.getString("trip_id");
                 String originValue = rs.getString("origin");
                 String destinationValue = rs.getString("destination");
-                String veihcleIdId = rs.getString("veihcle_id");
+                String vehicleIdId = rs.getString("vehicle_id");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
@@ -125,8 +125,8 @@ public class TripDAO {
                 trip.setDestination(destinationValue);
                 DatePicker departureTime = new DatePicker();
                 trip.setDepartureTime(departureTime);
-                Veihcle veihcle = veichleDAO.getVehicle(veihcleIdId,VeihcleType.Bus);
-                trip.setVehicle(veihcle);
+                Vehicle vehicle = vehicleDAO.getVehicle(vehicleIdId,VehicleType.Bus);
+                trip.setVehicle(vehicle);
                 trips.add(trip);
             }
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 package com.example.databaseTest;
 
-import org.example.helper.dao.VeichleDAO;
-import org.example.managers.VeichleManager;
+import org.example.helper.dao.VehicleDAO;
+import org.example.managers.VehicleManager;
 import org.example.models.Bus;
 import org.example.models.Seat;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,13 @@ public class BusTest {
     @Test
     public void addBus() {
         Bus bus = new Bus();
-        VeichleDAO dao = new VeichleDAO();
+        VehicleDAO dao = new VehicleDAO();
 
-        bus.setBusType("vip");
+        bus.setVehicleType("vip");
         bus.setSeatLayout(new Seat[5][5]);
-        bus.setBusID("4");
+        bus.setVehicleID("4");
         bus.setTotalSeats(4);
-        VeichleManager veichleManager = VeichleManager.getInstance();
+        VehicleManager veichleManager = VehicleManager.getInstance();
         assertFalse(dao.insertBus(bus));
     }
 }

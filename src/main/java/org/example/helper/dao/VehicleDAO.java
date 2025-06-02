@@ -5,8 +5,6 @@ import org.example.models.Bus;
 import org.example.models.Plane;
 import org.example.models.Vehicle;
 import org.example.models.VehicleType;
-import org.example.models.Veihcle;
-import org.example.models.VeihcleType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VeichleDAO {
+public class VehicleDAO {
 
     //dbye yeni bir otobüs veya yeni bir uçak eklemek için kullanılır.
     public boolean insertVehicle(Vehicle vehicle) {
@@ -70,25 +68,25 @@ public class VeichleDAO {
     }
 
     //Tek bir uçak veya tek bir otobüse ihtiyacımız olduğunda bu metod ile id vererek ihtiyacımız olan otobüs veya uçağı return eder
-    public Vehicle getVehicle(String veihcleId, VehicleType veichleType) {
+    public Vehicle getVehicle(String vehicleId, VehicleType vehicleType) {
         String sql = "SELECT * FROM veihcles WHERE vehicle_id = ?";
-        Vehicle veihcle = null;
+        Vehicle vehicle = null;
         try(Connection connection =DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, veihcleId);
+            stmt.setString(1, vehicleId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                if (veichleType.equals(VeihcleType.Plane)){
-                    veihcle = new Plane();
+                if (vehicleType.equals(VehicleType.Plane)){
+                    vehicle = new Plane();
                 }else {
-                    veihcle = new Bus();
+                    vehicle = new Bus();
                 }
-                veihcle.setId(rs.getString("veihcle_id"));
-                veihcle.setSeatType(rs.getString("seat_type"));
-                veihcle.setTotalSeats(rs.getInt("total_seats"));
-                String veihcleType = rs.getString("veihcle_type");
-                veihcle.setVeihcleType(VeihcleType.valueOf(veihcleType));
+                vehicle.setId(rs.getString("vehicle_id"));
+                vehicle.setSeatType(rs.getString("seat_type"));
+                vehicle.setTotalSeats(rs.getInt("total_seats"));
+                String vehicleType = rs.getString("vehicle_type");
+                vehicle.setVehicleType(VehicleType.valueOf(vehicleType));
             }
-            return veihcle;
+            return vehicle;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

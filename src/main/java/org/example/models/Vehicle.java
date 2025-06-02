@@ -14,8 +14,8 @@ abstract public class Vehicle {
         return vehicleType;
     }
 
-    public void setVehicleType(VehicleType veihcleType) {
-        this.vehicleType = veihcleType;
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     public String getSeatType() {
@@ -52,7 +52,7 @@ abstract public class Vehicle {
 
     @Override
     public String toString() {
-        return "Veihcle{" +
+        return "Vehicle{" +
                 "id='" + id + '\'' +
                 ", seatLayout=" + seatLayout +
                 ", totalSeats=" + totalSeats +

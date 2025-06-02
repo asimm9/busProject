@@ -25,7 +25,7 @@ public class SeatDAO {
                 seat.setColumn(rs.getInt("column_number"));
                 seat.setReserved(rs.getBoolean("is_reserved"));
                 seat.setUserID(rs.getString("user_id"));
-                seat.setBusID(rs.getString("veihcle_id"));
+                seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
                 return seat;
             }
@@ -49,7 +49,7 @@ public class SeatDAO {
                 seat.setColumn(rs.getInt("column_number"));
                 seat.setReserved(rs.getBoolean("is_reserved"));
                 seat.setUserID(rs.getString("user_id"));
-                seat.setBusID(rs.getString("bus_id"));
+                seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
                 seats.add(seat);
             }
@@ -135,7 +135,7 @@ public class SeatDAO {
                 seat.setColumn(rs.getInt("column_number"));
                 seat.setReserved(rs.getBoolean("is_reserved"));
                 seat.setUserID(rs.getString("user_id"));
-                seat.setBusID(rs.getString("bus_id"));
+                seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
                 seat.setSeatID(rs.getString("seat_id"));
                 seatList.add(seat);
