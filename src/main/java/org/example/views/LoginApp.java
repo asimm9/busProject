@@ -1,7 +1,6 @@
 package org.example.views;
 
 import javafx.animation.*;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,25 +17,79 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.controller.LoginController;
 import org.example.models.UserModel;
 import org.example.managers.UserManager;
 
 import java.util.UUID;
 
-public class LoginApp extends Application {
+public class LoginApp {
 
     private VBox formBox;
     private Scene scene;
     private Stage stage;
 
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    private final LoginController controller;
+    private TextField usernameField;
+    private PasswordField passwordField;
+    private TextField registerEmailField;
+    private PasswordField registerPasswordField;
+    private TextField registerUsernameField;
+
+    public TextField getRegisterEmailField() {
+        return registerEmailField;
+    }
+    public void setRegisterEmailField(TextField registerEmailField) {
+        this.registerEmailField = registerEmailField;
+    }
+    public PasswordField getRegisterPasswordField() {
+        return registerPasswordField;
+    }
+    public void setRegisterPasswordField(PasswordField registerPasswordField) {
+        this.registerPasswordField = registerPasswordField;
+    }
+    public TextField getRegisterUsernameField() {
+        return registerUsernameField;
+    }
+    public void setRegisterUsernameField(TextField registerUsernameField) {
+        this.registerUsernameField = registerUsernameField;
+    }
+    public TextField getUsernameField() {
+        return usernameField;
+    }
+    public void setUsernameField(TextField usernameField) {
+        this.usernameField = usernameField;
+    }
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+    public void setPasswordField(PasswordField passwordField) {
+        this.passwordField = passwordField;
+    }
+
     private final UserManager userManager = UserManager.getInstance();
 
-    @Override
-    public void start(Stage stage) {
-        this.stage = stage;
+    public LoginApp(){
+        this.controller = new LoginController(this);
+        start();
+    }
 
+
+    public void start() {
+        stage = new Stage();
+
+        //form
         formBox = new VBox(15);
         formBox.setAlignment(Pos.CENTER);
+
 
         VBox root = new VBox(20);
         root.setPadding(new Insets(30));
@@ -63,9 +116,12 @@ public class LoginApp extends Application {
         container.setAlignment(Pos.TOP_CENTER);
         root.getChildren().add(container);
 
+        //login form build ediliyor
         showLoginForm();
 
         scene = new Scene(root, 500, 420);
+
+        //sayfa başlığı
         stage.setTitle("Giriş Ekranı");
         stage.setScene(scene);
         stage.show();
@@ -123,33 +179,23 @@ public class LoginApp extends Application {
     private void showLoginForm() {
         formBox.getChildren().clear();
 
-        TextField usernameField = new TextField();
+        //username alanı
+        usernameField = new TextField();
         styleInputField(usernameField);
         usernameField.setPromptText("Kullanıcı Adı");
 
-        PasswordField passwordField = new PasswordField();
+        //password alanı
+        passwordField = new PasswordField();
         styleInputField(passwordField);
         passwordField.setPromptText("Şifre");
 
+        //giriş yapma butonu
         Button loginButton = new Button("Giriş Yap");
         styleButton(loginButton);
-
-        loginButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-
-            UserModel user = userManager.login(username, password);
-            if (user != null) {
-                stage.close();
-                if (user.isAdmin()) {
-                    new AdminPanel(user);
-                } else {
-                    new UserDashboard(user);
-                }
-            } else {
-                showAlert("Kullanıcı adı veya şifre yanlış!");
-            }
+        loginButton.setOnAction(event -> {
+            controller.onLogin();
         });
+
 
         Label switchToRegister = new Label("Hesabın yoksa ");
         switchToRegister.setTextFill(Color.WHITE);
@@ -158,6 +204,7 @@ public class LoginApp extends Application {
         Hyperlink registerLink = new Hyperlink("Kayıt Ol");
         registerLink.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         registerLink.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        //kayıt sayfasını build eder
         registerLink.setOnAction(e -> showRegisterForm());
 
         HBox linkBox = new HBox(switchToRegister, registerLink);
@@ -166,53 +213,26 @@ public class LoginApp extends Application {
         formBox.getChildren().addAll(usernameField, passwordField, loginButton, linkBox);
     }
 
+    //kayıt sayfası
     private void showRegisterForm() {
         formBox.getChildren().clear();
 
-        TextField emailField = new TextField();
-        styleInputField(emailField);
-        emailField.setPromptText("E-posta");
+        registerEmailField = new TextField();
+        styleInputField(registerEmailField);
+        registerEmailField.setPromptText("E-posta");
 
-        TextField usernameField = new TextField();
-        styleInputField(usernameField);
-        usernameField.setPromptText("Kullanıcı Adı");
+        registerUsernameField = new TextField();
+        styleInputField(registerUsernameField);
+        registerUsernameField.setPromptText("Kullanıcı Adı");
 
-        PasswordField passwordField = new PasswordField();
-        styleInputField(passwordField);
-        passwordField.setPromptText("Şifre");
+        registerPasswordField = new PasswordField();
+        styleInputField(registerPasswordField);
+        registerPasswordField.setPromptText("Şifre");
 
         Button registerButton = new Button("Kayıt Ol");
         styleButton(registerButton);
+        registerButton.setOnAction(actionEvent -> controller.onRegister());
 
-        registerButton.setOnAction(e -> {
-            String email = emailField.getText();
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-
-            if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
-                showAlert("Lütfen tüm alanları doldurun.");
-                return;
-            }
-
-            UserModel newUser = new UserModel();
-            newUser.setEmail(email);
-            newUser.setUsername(username);
-            newUser.setPassword(password);
-            newUser.setAdmin(username.toLowerCase().contains("admin"));
-            newUser.setId(UUID.randomUUID().toString());
-
-            boolean success = userManager.registerUser(newUser);
-            if (success) {
-                stage.close();
-                if (newUser.isAdmin()) {
-                    new AdminPanel(newUser);
-                } else {
-                    new UserDashboard(newUser);
-                }
-            } else {
-                showAlert("Bu kullanıcı zaten kayıtlı!");
-            }
-        });
 
         Label switchToLogin = new Label("Zaten hesabın var mı? ");
         switchToLogin.setTextFill(Color.WHITE);
@@ -221,12 +241,13 @@ public class LoginApp extends Application {
         Hyperlink loginLink = new Hyperlink("Giriş Yap");
         loginLink.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
         loginLink.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        //giriş yapma ekranını build eder
         loginLink.setOnAction(e -> showLoginForm());
 
         HBox linkBox = new HBox(switchToLogin, loginLink);
         linkBox.setAlignment(Pos.CENTER);
 
-        formBox.getChildren().addAll(emailField, usernameField, passwordField, registerButton, linkBox);
+        formBox.getChildren().addAll(registerEmailField, registerUsernameField, registerPasswordField, registerButton, linkBox);
     }
 
     private void styleInputField(TextField field) {
@@ -242,7 +263,7 @@ public class LoginApp extends Application {
         button.setPadding(new Insets(8, 20, 8, 20));
     }
 
-    private void showAlert(String message) {
+    public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Bilgi");
         alert.setHeaderText(null);
@@ -250,7 +271,4 @@ public class LoginApp extends Application {
         alert.showAndWait();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

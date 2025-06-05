@@ -18,10 +18,7 @@ import javafx.stage.Stage;
 import org.example.managers.ReservationManager;
 import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
-import org.example.models.Reservation;
-import org.example.models.Seat;
-import org.example.models.Trip;
-import org.example.models.UserModel;
+import org.example.models.*;
 import org.example.views.SeatLayout;
 import org.example.views.UserDashboard;
 
@@ -50,9 +47,15 @@ public class ReservationController {
         String departure = view.departureBox.getValue();
         String arrival = view.arrivalBox.getValue();
         LocalDate date = view.datePicker.getValue();
-        String type = view.busButton.isSelected() ? "Otobüs" : "Uçak";
+        VehicleType vehicleType;
+        if(view.isBus()){
+            vehicleType  = VehicleType.Bus;
+        }else {
+            vehicleType  = VehicleType.Plane;
+        }
 
-        List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival);
+
+        List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival,vehicleType);
 
         VBox tripListBox = view.tripListBox;
         tripListBox.getChildren().clear();
@@ -243,5 +246,11 @@ public class ReservationController {
         alert.showAndWait();
     }
 
+    public void handleBusSelected(){
+        view.setBus(true);
+    }
 
+    public void handlePlaneSelected(){
+        view.setBus(false);
+    }
 }

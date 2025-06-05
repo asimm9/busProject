@@ -37,7 +37,7 @@ public class SeatDAO {
 
     //dbden bir otobüse ait olan tüm seatleri getirir ve ArrayList olarak döndürür
     public List<Seat> getAllSeatsByTrip(String busID) {
-        String sql = "SELECT * FROM seats WHERE bus_id = ?";
+        String sql = "SELECT * FROM seats WHERE vehicle_id = ?";
         List<Seat> seats = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql) ) {
             stmt.setString(1, busID);
@@ -62,10 +62,7 @@ public class SeatDAO {
 
     //kullanıcı koltuk seçtikten sonra veya koltuğunu iptal ettikten sonra dbde o seati günceller
     public boolean updatesSeatByTrip(List<Seat> seats) {
-
-        String sql = "UPDATE seats SET is_reserved = ?, user_id = ?, trip_id = ? WHERE seat_id = ? AND bus_id = ?";
-
-
+        String sql = "UPDATE seats SET is_reserved = ?, user_id = ?, trip_id = ? WHERE seat_id = ? AND vehicle_id = ?";
 
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
 
@@ -92,7 +89,7 @@ public class SeatDAO {
 
     //admin her otobüse göre seatleri otobüs tipi ve koltuk sayısına göre dbye ekler
     public boolean insertSeatByBusID(Seat[][] seats) {
-    String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, bus_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, vehicle_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
         for (int row = 0; row < seats.length; row++) {
@@ -121,6 +118,7 @@ public class SeatDAO {
     }
     }
 
+    //sefer ve kullanıcıya göre seçilen koltuğu getirir.
     public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
         String sql = "SELECT * FROM seats WHERE trip_id = ? AND user_id = ?";
         List<Seat> seatList = new ArrayList();

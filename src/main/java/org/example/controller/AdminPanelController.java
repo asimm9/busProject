@@ -16,7 +16,9 @@ import org.example.managers.TripManager;
 import org.example.models.*;
 import org.example.views.AdminPanel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,18 +56,28 @@ public class AdminPanelController {
     public void handleAddTrip() {
         String origin = view.getFromField().getText();
         String destination = view.getToField().getText();
-        DatePicker date = view.getDatePicker() == null ? new DatePicker() : view.getDatePicker();
         LocalDateTime now = LocalDateTime.now();
         String busID = view.getBusCard().isVisible() ? view.getBusIdField().getText() : view.getPlaneIdField().getText();
+        LocalDate selected = view.getDatePicker().getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formatted = selected.format(formatter);
+
 
         if (!origin.isEmpty() && !destination.isEmpty() /*&& !date.isEmpty() && !now.isEmpty()*/ && !busID.isEmpty()) {
             Trip trip = new Trip();
-            Vehicle vehicle = vehicleManager.getVehicleById(busID,VehicleType.Bus);
+            VehicleType vehicleType;
+            if (view.isBus()){
+                vehicleType = VehicleType.Bus;
+            }else{
+                vehicleType = VehicleType.Plane;
+            }
+            Vehicle vehicle = vehicleManager.getVehicleById(busID, vehicleType);
+
 
             trip.setTripID(UUID.randomUUID().toString());
             trip.setOrigin(origin);
             trip.setDestination(destination);
-            trip.setDepartureTime(date);
+            trip.setDepartureTime(formatted);
             trip.setTime(now);
             trip.setVehicle(vehicle);
             if (tripManager.createTrip(trip)){
@@ -122,22 +134,26 @@ public class AdminPanelController {
         );
         card.setMaxWidth(360);
 
-        Label idLabel = new Label("ID: " + trip.getTripID());
-        idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
-        idLabel.setTextFill(Color.web("#3b5998"));
-
         Label fromTo = new Label("Kalkış: " + trip.getOrigin() + "   ➔   Varış: " + trip.getDestination());
         fromTo.setFont(Font.font("Arial", 13));
 
-        Label dateLabel = new Label("Tarih & Saat: " + (trip.getDepartureTime() != null ? trip.getDepartureTime().toString() : "-"));
-        dateLabel.setFont(Font.font("Arial", 12));
 
-        String transportInfo = trip.getVehicle().toString();
-        Label transportLabel = new Label(transportInfo);
+        Label dateLabel = new Label("Tarih: " + trip.getDepartureTime());
+        dateLabel.setFont(Font.font("Arial", 13));
+
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = trip.getTime().format(formatter);
+        Label timeLabel = new Label("Saat: " + formattedTime);
+        timeLabel.setFont(Font.font("Arial", 12));
+
+        Vehicle transportInfo = trip.getVehicle();
+        Label transportLabel = new Label(transportInfo.getVehicleType().getName() + " tipi: " + transportInfo.getSeatType());
         transportLabel.setFont(Font.font("Arial", 12));
         transportLabel.setTextFill(Color.web("#8b0033"));
 
-        card.getChildren().addAll(idLabel, fromTo, dateLabel, transportLabel);
+        card.getChildren().addAll(fromTo, dateLabel, timeLabel, transportLabel);
 
         // Sürükleme için değişkenler
         final double[] mouseAnchorX = new double[1];
@@ -213,14 +229,18 @@ public class AdminPanelController {
             String seatType = busTypeField.getText();
             String totalSeats = totalSeatsField.getText();
             Vehicle vehicle;
+            VehicleType vehicleType;
             if (view.isBus()){
                 vehicle = new Bus();
+                vehicleType = VehicleType.Bus;
             }else{
                 vehicle = new Plane();
+                vehicleType = VehicleType.Plane;
             }
             vehicle.setSeatType(seatType);
             vehicle.setId(id);
             vehicle.setTotalSeats(Integer.parseInt(totalSeats));
+            vehicle.setVehicleType(vehicleType);
             int row= 0;
             int column = 0;
             Seat[][] seats;
@@ -238,7 +258,7 @@ public class AdminPanelController {
                             seat.setSeatID(String.valueOf(seatNumber));
                             seat.setUserID(null);
                             seat.setTripID(null);
-                            seat.setBusID(id);
+                            seat.setVehicleID(id);
                             seats[rowCount][columnCount] = seat;
                             seatNumber++;
                         }
@@ -257,7 +277,7 @@ public class AdminPanelController {
                             seat.setSeatID(String.valueOf(seatNumber));
                             seat.setUserID(null);
                             seat.setTripID(null);
-                            seat.setBusID(id);
+                            seat.setVehicleID(id);
                             seats[rowCount][columnCount] = seat;
                         seatNumber++;
                         }
@@ -277,7 +297,7 @@ public class AdminPanelController {
                             seat.setSeatID(String.valueOf(seatNumber));
                             seat.setUserID(null);
                             seat.setTripID(null);
-                            seat.setBusID(id);
+                            seat.setVehicleID(id);
                             seats[rowCount][columnCount] = seat;
                             seatNumber++;
                         }
@@ -296,7 +316,7 @@ public class AdminPanelController {
                             seat.setSeatID(String.valueOf(seatNumber));
                             seat.setUserID(null);
                             seat.setTripID(null);
-                            seat.setBusID(id);
+                            seat.setVehicleID(id);
                             seats[rowCount][columnCount] = seat;
                             seatNumber++;
                         }

@@ -11,7 +11,7 @@ public class Trip {
     private String tripID;
     private String origin;
     private String destination;
-    private DatePicker departureTime;
+    private String departureTime;
     private LocalDateTime time;
     private Vehicle vehicle;
     private List<Seat> seatList;
@@ -77,11 +77,11 @@ public class Trip {
         this.destination = destination;
     }
 
-    public DatePicker getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(DatePicker departureTime) {
+    public void setDepartureTime(String departureTime) {
         this.departureTime = departureTime;
     }
 

@@ -78,7 +78,7 @@ public class SeatLayout {
     //Koltukların grid layout kısmı oluşturuluyor ızgara formatındaki o ekran
     private void olusturKoltukGrid() {
         boolean ikiArtıBir = false;
-        if (trip.getVehicle().getBusType().equals("2+1")) {
+        if (trip.getVehicle().getSeatType().equals("2+1")) {
             ikiArtıBir = true;
         }
 
@@ -95,13 +95,13 @@ public class SeatLayout {
 
 
         int siraSayisi = 0; //row sayısı
-        if (trip.getVehicle().getBusType().equals("2+1") && trip.getVehicle().getTotalSeats() == 48) {
+        if (trip.getVehicle().getSeatType().equals("2+1") && trip.getVehicle().getTotalSeats() == 48) {
             siraSayisi = 16;
-        }else if (trip.getVehicle().getBusType().equals("2+1") && trip.getVehicle().getTotalSeats() == 36) {
+        }else if (trip.getVehicle().getSeatType().equals("2+1") && trip.getVehicle().getTotalSeats() == 36) {
             siraSayisi = 12;
-        }else if (trip.getVehicle().getBusType().equals("2+2") && trip.getVehicle().getTotalSeats() == 48) {
+        }else if (trip.getVehicle().getSeatType().equals("2+2") && trip.getVehicle().getTotalSeats() == 48) {
             siraSayisi = 12;
-        }else if (trip.getVehicle().getBusType().equals("2+2") && trip.getVehicle().getTotalSeats() == 36) {
+        }else if (trip.getVehicle().getSeatType().equals("2+2") && trip.getVehicle().getTotalSeats() == 36) {
             siraSayisi = 9;
         }else {
             throw new Error();
@@ -181,7 +181,7 @@ public class SeatLayout {
     private Seat createSeatInstance(String seatID,int row, int column) {  //seatID koltuk numarasına referans eder.
         Seat seat = new Seat();
         seat.setTripID(trip.getTripID());
-        seat.setBusID(trip.getVehicle().getBusID());
+        seat.setVehicleID(trip.getVehicle().getId());
         seat.setUserID(user.getId());
         seat.setSeatID(seatID);
         seat.setReserved(false);

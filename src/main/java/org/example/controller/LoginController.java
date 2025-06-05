@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import org.example.managers.UserManager;
 import org.example.models.UserModel;
 import org.example.views.AdminPanel;
+import org.example.views.LoginApp;
 import org.example.views.UserDashboard;
 
 import java.util.UUID;
@@ -17,55 +18,37 @@ public class LoginController {
     private PasswordField passwordField;
     private Label statusLabel;
     private ImageView busImage;
+    private LoginApp view;
 
     private final UserManager userManager = UserManager.getInstance();
 
-    // Set metotları: LoginApp'ten bileşenleri alır
-    public void setUsernameField(TextField usernameField) {
-        this.usernameField = usernameField;
-    }
-
-    public void setPasswordField(PasswordField passwordField) {
-        this.passwordField = passwordField;
-    }
-
-    public void setStatusLabel(Label statusLabel) {
-        this.statusLabel = statusLabel;
-    }
-
-    public void setBusImage(ImageView busImage) {
-        this.busImage = busImage;
-        Image bus = new Image(getClass().getResourceAsStream("/images/bus.png"));
-        this.busImage.setImage(bus);
+    public LoginController(LoginApp view) {
+        this.view = view;
     }
 
     // Giriş işlemi
     public void onLogin() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        String username = view.getUsernameField().getText();
+        String password = view.getPasswordField().getText();
 
         UserModel user = userManager.login(username, password);
         if (user != null) {
-            statusLabel.setText("Giriş başarılı!");
-
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.close();
-
+            view.getStage().close();
             if (user.isAdmin()) {
                 new AdminPanel(user);
             } else {
                 new UserDashboard(user);
             }
         } else {
-            statusLabel.setText("Hatalı kullanıcı adı veya şifre.");
+            view.showAlert("Kullanıcı adı veya şifre yanlış!");
         }
     }
 
     // Kayıt işlemi
     public void onRegister() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        String email = "asimisik9@gmail.com"; // sabit email - istersen dışarıdan al
+        String username = view.getRegisterUsernameField().getText();
+        String password = view.getRegisterPasswordField().getText();
+        String email =  view.getRegisterEmailField().getText();
 
         UserModel user = new UserModel();
         user.setUsername(username);
@@ -76,9 +59,14 @@ public class LoginController {
 
         boolean success = userManager.registerUser(user);
         if (success) {
-            statusLabel.setText("Kayıt başarılı!");
+            view.getStage().close();
+            if (user.isAdmin()) {
+                new AdminPanel(user);
+            } else {
+                new UserDashboard(user);
+            }
         } else {
-            statusLabel.setText("Kullanıcı zaten mevcut.");
+            view.showAlert("Bu kullanıcı zaten kayıtlı!");
         }
     }
 }

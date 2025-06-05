@@ -69,10 +69,11 @@ public class VehicleDAO {
 
     //Tek bir uçak veya tek bir otobüse ihtiyacımız olduğunda bu metod ile id vererek ihtiyacımız olan otobüs veya uçağı return eder
     public Vehicle getVehicle(String vehicleId, VehicleType vehicleType) {
-        String sql = "SELECT * FROM veihcles WHERE vehicle_id = ?";
+        String sql = "SELECT * FROM vehicles WHERE vehicle_id = ? AND vehicle_type = ?";
         Vehicle vehicle = null;
         try(Connection connection =DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, vehicleId);
+            stmt.setString(2, vehicleType.getName());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 if (vehicleType.equals(VehicleType.Plane)){
@@ -83,8 +84,8 @@ public class VehicleDAO {
                 vehicle.setId(rs.getString("vehicle_id"));
                 vehicle.setSeatType(rs.getString("seat_type"));
                 vehicle.setTotalSeats(rs.getInt("total_seats"));
-                String vehicleType = rs.getString("vehicle_type");
-                vehicle.setVehicleType(VehicleType.valueOf(vehicleType));
+                String vehicleTypee = rs.getString("vehicle_type");
+                vehicle.setVehicleType(VehicleType.valueOf(vehicleTypee));
             }
             return vehicle;
         } catch (SQLException e) {

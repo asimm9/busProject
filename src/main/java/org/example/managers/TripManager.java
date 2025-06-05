@@ -2,16 +2,16 @@ package org.example.managers;
 
 import org.example.helper.dao.TripDAO;
 import org.example.models.Trip;
+import org.example.models.VehicleType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TripManager {
     private static TripManager instance;
-    private List<Trip> trips;
-    private int tripIDcounter;
     private TripDAO tripDAO = new TripDAO();
 
+    //singelton nesne burda üretilir.
     public static TripManager getInstance() {
         if (instance == null) {
             instance = new TripManager();
@@ -31,5 +31,6 @@ public class TripManager {
     //ID'ye göre databaseden tek bir trip nesnesini çeker.
     public Trip getTripById(String id){return tripDAO.getTrip(id);}
 
-    public List<Trip> getTripByFilteredParameters(String from, String to){return tripDAO.getTripByFilteredParameters(from, to);}
+    //nerden nereye filtrelerken bu metod kullanılır ve ona ggöre seferler listelenir.
+    public List<Trip> getTripByFilteredParameters(String from, String to, VehicleType vehicleType){return tripDAO.getTripByFilteredParameters(from, to,vehicleType);}
 }

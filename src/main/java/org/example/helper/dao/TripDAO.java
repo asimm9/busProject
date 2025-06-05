@@ -18,12 +18,12 @@ public class TripDAO {
 
     //dbye yeni bir trip eklemek için kullanılır
     public boolean insertTrip(Trip trip) {
-        String sql = "INSERT INTO trips(trip_id, origin, destination, departure_time, time, veihcle_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO trips(trip_id, origin, destination, departure_time, time, vehicle_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, trip.getTripID());
             stmt.setString(2, trip.getOrigin());
             stmt.setString(3, trip.getDestination());
-            stmt.setString(4, trip.getDepartureTime().toString());
+            stmt.setString(4, trip.getDepartureTime());
             stmt.setString(5, trip.getTime().toString());
             stmt.setString(6, trip.getVehicle().getId());
             return stmt.executeUpdate() > 0;
@@ -57,7 +57,7 @@ public class TripDAO {
                 String tripID = rs.getString("trip_id");
                 String origin = rs.getString("origin");
                 String destination = rs.getString("destination");
-                DatePicker departureTime = new DatePicker();
+                String departureTime = rs.getString("departure_time");
                 LocalDateTime time = LocalDateTime.parse(rs.getString("time"));
                 String busId = rs.getString("vehicle_id");
 
@@ -91,7 +91,7 @@ public class TripDAO {
                     trip.setTripID(tripID);
                     trip.setOrigin(rs.getString("origin"));
                     trip.setDestination(rs.getString("destination"));
-                    trip.setDepartureTime(new DatePicker());
+                    trip.setDepartureTime(rs.getString("departure_time"));
                     trip.setTime(LocalDateTime.parse(rs.getString("time")));
                     String vehicleId = rs.getString("vehicle_id");
                     trip.setVehicle(vehicleDAO.getVehicle(vehicleId,VehicleType.Plane));
@@ -104,7 +104,7 @@ public class TripDAO {
     }
 
     //kullanıcı kısmında tripleri filtrelemek için kullanılır nereden nereye sorusunun cevabıdır
-    public List<Trip> getTripByFilteredParameters(String origin, String destination) {
+    public List<Trip> getTripByFilteredParameters(String origin, String destination, VehicleType vehicleType) {
         String sql = "SELECT * FROM trips WHERE origin = ? AND destination = ?";
         List<Trip> trips = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect();
@@ -118,16 +118,24 @@ public class TripDAO {
                 String originValue = rs.getString("origin");
                 String destinationValue = rs.getString("destination");
                 String vehicleIdId = rs.getString("vehicle_id");
+                String departureTime = rs.getString("departure_time");
+                String timeValue = rs.getString("time");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
                 trip.setOrigin(originValue);
                 trip.setDestination(destinationValue);
-                DatePicker departureTime = new DatePicker();
                 trip.setDepartureTime(departureTime);
-                Vehicle vehicle = vehicleDAO.getVehicle(vehicleIdId,VehicleType.Bus);
+                Vehicle vehicle = vehicleDAO.getVehicle(vehicleIdId,vehicleType);
                 trip.setVehicle(vehicle);
-                trips.add(trip);
+                trip.setTime(LocalDateTime.parse(timeValue));
+                if (vehicle == null) {
+                    System.out.println(" bu eklenmedi");
+                }else{
+                    trips.add(trip);
+                }
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();

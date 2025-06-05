@@ -29,6 +29,15 @@ public class UserDashboard {
     public VBox tripListBox;
     public Button reserveButton;
     public SeatLayout seatLayout;
+    private boolean isBus;
+
+    public boolean isBus() {
+        return isBus;
+    }
+
+    public void setBus(boolean bus) {
+        isBus = bus;
+    }
 
     // Seçili sefer (tıklanınca güncellenir)
     public Trip selectedTrip = null;
@@ -59,7 +68,9 @@ public class UserDashboard {
         welcomeLabel.setTextFill(Color.WHITE);
         welcomeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
 
+        //rezervasyonların listelenceği buton
         Button myReservationsButton = new Button("Rezervasyonlarım");
+        //buton controllera bağlanıyor
         myReservationsButton.setOnAction(e -> reservationController.handleListReservation(user)); // Dilersen ekleyebilirsin
 
         Region spacer = new Region(); // Boşluk bırakmak için
@@ -91,6 +102,8 @@ public class UserDashboard {
         busButton.setToggleGroup(transportToggle);
         planeButton.setToggleGroup(transportToggle);
         busButton.setSelected(true);
+        busButton.setOnAction(e -> reservationController.handleBusSelected());
+        planeButton.setOnAction(e -> reservationController.handlePlaneSelected());
 
         HBox transportSelector = new HBox(10, busButton, planeButton);
         transportSelector.setAlignment(Pos.CENTER);
@@ -115,8 +128,10 @@ public class UserDashboard {
         reserveButton = new Button("Rezervasyon Yap");
         reserveButton.setDisable(true); // Başta disable
 
-        // Butonlar controller metodlarına yönlendirir
+        //sefer arama butonunu controllera bağlar.
         searchTripButton.setOnAction(e -> reservationController.handleSearchTrips()); // sefer arama butonu
+
+        //rezervasyon yapma butonunu controllera bağlar.
         reserveButton.setOnAction(e -> reservationController.handleReservation()); // rezervasyon yapma butonu
 
         root.getChildren().addAll(

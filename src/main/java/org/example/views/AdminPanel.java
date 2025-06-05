@@ -33,11 +33,10 @@ public class AdminPanel {
     private Label messageLabel;
     private ToggleButton busButton;
     private ToggleButton planeButton;
+    private boolean isBus;
 
     public boolean isBus() {return isBus;}
     public void setBus(boolean bus) {isBus = bus;}
-
-    private boolean isBus;
 
 
     public AdminPanel(UserModel adminUser) {
@@ -46,6 +45,8 @@ public class AdminPanel {
         show();
     }
 
+
+    //sayfanın build edildiği metod burası.
     public void show() {
         Stage stage = new Stage();
         stage.setTitle("Admin Paneli - Hoş geldin, " + adminUser.getUsername());
@@ -62,63 +63,63 @@ public class AdminPanel {
                 CornerRadii.EMPTY, Insets.EMPTY);
         root.setBackground(new Background(backgroundFill));
 
+
+        //sayfa başlığı
         Label titleLabel = new Label("Sefer Ekle");
         titleLabel.setTextFill(Color.WHITE);
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+
 
         VBox formBox = new VBox(15);
         formBox.setMaxWidth(500);
 
         // Ulaşım Türü Seçimi (Otobüs / Uçak)
         ToggleGroup transportToggle = new ToggleGroup();
-
         busButton = new ToggleButton("🚌 Otobüs");
         planeButton = new ToggleButton("✈️ Uçak");
         busButton.setToggleGroup(transportToggle);
         planeButton.setToggleGroup(transportToggle);
         busButton.setSelected(true);
-
         busButton.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         planeButton.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         busButton.setPrefWidth(100);
         planeButton.setPrefWidth(100);
-
         busButton.setStyle("-fx-background-radius: 10; -fx-background-color: white; -fx-text-fill: #8b0033;");
         planeButton.setStyle("-fx-background-radius: 10; -fx-background-color: white; -fx-text-fill: #8b0033;");
-
         HBox transportBox = new HBox(10, busButton, planeButton);
         transportBox.setAlignment(Pos.CENTER);
 
-        // Kalkış ve Varış
+        //Kalkış formu.
         fromField = new TextField();
         VBox fromCard = createLabeledInput("Kalkış", fromField, "Kalkış Yeri");
         fromCard.setAlignment(Pos.CENTER);
         fromCard.setMaxWidth(Double.MAX_VALUE);
 
-
+        //varış formu.
         toField = new TextField();
         VBox toCard = createLabeledInput("Varış", toField, "Varış Yeri");
         toCard.setAlignment(Pos.CENTER);
         toCard.setMaxWidth(Double.MAX_VALUE);
 
 
-        // Tarih
+        //Tarih seçme formu
         datePicker = new DatePicker();
         VBox dateCard = createLabeledInput("Tarih", datePicker);
         dateCard.setAlignment(Pos.CENTER);
         dateCard.setMaxWidth(Double.MAX_VALUE);
 
 
-        // Saat
+        //Saat seçme formu.
         timeField = new TextField();
         VBox timeCard = createLabeledInput("Saat", timeField, "Örn: 13:30");
         timeCard.setAlignment(Pos.CENTER);
         timeCard.setMaxWidth(Double.MAX_VALUE);
 
-        // ID alanları
+        // Otobüs ise otobüs plakası
         busIdField = new TextField();
-        busCard = createLabeledInput("Otobüs ID", busIdField, "Otobüs ID");
+        busCard = createLabeledInput("Otobüs Plakası", busIdField, "Otobüs Plakası");
 
+        //Uçak ise uçak id belirleme kısmı
         planeIdField = new TextField();
         planeCard = createLabeledInput("Uçak ID", planeIdField, "Uçak ID");
         planeCard.setVisible(false);
@@ -133,6 +134,7 @@ public class AdminPanel {
         addTripButton.setTextFill(Color.web("#8b0033"));
         addTripButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
         addTripButton.setPadding(new Insets(10, 25, 10, 25));
+        //metod controllera burda bağlanıyor.
         addTripButton.setOnAction(e -> controller.handleAddTrip());
 
         // Tüm Seferleri Listele Butonu
@@ -141,22 +143,25 @@ public class AdminPanel {
         listTripsButton.setTextFill(Color.web("#3b5998"));
         listTripsButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
         listTripsButton.setPadding(new Insets(10, 25, 10, 25));
+        //buton controllera burda bağlanıyor.
         listTripsButton.setOnAction(e -> controller.handleListTrips());
 
         //Bus Ekleme butonu
-        Button addBusButton = new Button("Otobüs Ekle");
+        Button addBusButton = new Button("Araç Ekle");
         addBusButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         addBusButton.setTextFill(Color.web("#8b0033"));
         addBusButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
         addBusButton.setPadding(new Insets(10, 25, 10, 25));
+        //buton kontrollera burda bağlanıyor.
         addBusButton.setOnAction(actionEvent -> controller.handleInsertVeihcle());
 
         //busları listleme butonu
-        Button listBusesButton = new Button("Otobüsleri Listele");
+        Button listBusesButton = new Button("Araçları Listele");
         listBusesButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         listBusesButton.setTextFill(Color.web("#3b5998"));
         listBusesButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
         listBusesButton.setPadding(new Insets(10, 25, 10, 25));
+        //buton controllera burda bağlanıyor.
         listBusesButton.setOnAction(actionEvent -> controller.handleListBuses());
 
         // Sefer işlemleri (Sol taraf)

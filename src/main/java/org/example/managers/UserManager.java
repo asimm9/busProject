@@ -15,6 +15,7 @@ public class UserManager {
         this.userList = new ArrayList<>();
     }
 
+    //singleton için nesne üretimi ve kontrol burda yapılır.
     public static UserManager getInstance() {
         if (instance == null) {
             instance = new UserManager();
@@ -22,34 +23,16 @@ public class UserManager {
         return instance;
     }
 
+    //kullanıcı kayıt edilir kullanıcı var mı kontrolü yapılıyor
     public boolean registerUser(UserModel user) {
         // Aynı ID'ye sahip kullanıcı varsa kayıt etme
 
         return userDAO.createUser(user);
     }
 
+    //kullanıcı kayıdı burda yapılıyor
     public UserModel login(String username, String password) {
         return userDAO.findByUsernameAndPassword(username, password);
     }
 
-    /*public List<UserModel> getAllUsers() {
-        return new ArrayList<>(userList);
-    }
-
-    public boolean deleteUserById(String id) {
-        return userList.removeIf(u -> u.getId().equals(id));
-    }
-
-    public UserModel getUserById(String id) {
-        for (UserModel user : userList) {
-            if (user.getId().equals(id)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public void clearUsers() {
-        userList.clear();
-    }*/
 }
