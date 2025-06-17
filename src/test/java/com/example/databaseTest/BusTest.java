@@ -6,7 +6,12 @@ import org.example.managers.VehicleManager;
 import org.example.models.Bus;
 import org.example.models.Seat;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import org.example.models.enums.VehicleType;
+=======
+import org.example.models.Vehicle;
+import org.example.models.VehicleType;
+>>>>>>> Stashed changes
 =======
 import org.example.models.Vehicle;
 import org.example.models.VehicleType;
@@ -29,6 +34,7 @@ public class BusTest {
         bus.setVehicleType(VehicleType.Bus);
         bus.setSeatLayout(new Seat[5][5]);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         bus.setTotalSeats(4);
         VehicleManager veichleManager = VehicleManager.getInstance();
         assertFalse(dao.insertVehicle(bus));
@@ -49,6 +55,23 @@ public class BusTest {
         assertTrue(veichleManager.deleteVehicle(bus));
 >>>>>>> Stashed changes
     }
+=======
+        bus.setId("4");
+        bus.setTotalSeats(4);
+        VehicleManager vehicleManager = VehicleManager.getInstance();
+        assertTrue(dao.insertVehicle(bus));
+    }
+    @Test
+    public void deleteVehicle() {
+        Vehicle bus = new Bus();
+        bus.setVehicleType(VehicleType.Bus);
+        bus.setSeatLayout(new Seat[5][5]);
+        bus.setId("4");
+        bus.setTotalSeats(4);
+        VehicleManager veichleManager = VehicleManager.getInstance();
+        assertTrue(veichleManager.deleteVehicle(bus));
+    }
+>>>>>>> Stashed changes
 
     @Test
     public void getVeichleById() {
