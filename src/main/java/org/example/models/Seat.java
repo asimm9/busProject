@@ -12,7 +12,7 @@ public class Seat {
     private boolean isReserved;
 
     //kodun geri kalanına implementasyonu yapılmadı
-    public  static class Builder {
+    public static class Builder {
         private final Seat seat = new Seat();
         public Builder seatID(String seatID) {
             seat.seatID = seatID;

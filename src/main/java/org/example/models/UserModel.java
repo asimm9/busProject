@@ -12,6 +12,36 @@ public class UserModel {
     private boolean admin;
     private List<Reservation> reservations;
 
+    public static class  Builder {
+        private UserModel userModel = new UserModel();
+        public Builder username(String username) {
+            this.userModel.username = username;
+            return this;
+        }
+        public Builder password(String password) {
+            this.userModel.password = password;
+            return this;
+        }
+        public Builder email(String email) {
+            this.userModel.email = email;
+            return this;
+        }
+        public Builder id(String id) {
+            this.userModel.id = id;
+            return this;
+        }
+        public Builder admin(boolean admin) {
+            this.userModel.admin = admin;
+            return this;
+        }
+        public Builder reservations(List<Reservation> reservations) {
+            this.userModel.reservations = reservations;
+            return this;
+        }
+        public UserModel build() {
+            return this.userModel;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -50,41 +80,28 @@ public class UserModel {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public List<Reservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
 
 
 }

@@ -98,10 +98,7 @@ public class ReservationDAO {
                 // userId zaten bildiğimiz için doğrudan atayabiliriz
                 UserModel user = new UserDAO().getUserById(userId);
                 if (user == null) {
-                    user = new UserModel();
-                    user.setId(userId);
-                    user.setUsername("Bilinmeyen Kullanıcı (" + userId + ")");
-                    user.setEmail("");
+                    user = new UserModel.Builder().id(userId).username("Bilinmeyen Kullanıcı (" + userId + ")").email("").build();
                 }
                 reservation.setUser(user);
 

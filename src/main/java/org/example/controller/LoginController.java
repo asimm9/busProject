@@ -50,12 +50,10 @@ public class LoginController {
         String password = view.getRegisterPasswordField().getText();
         String email =  view.getRegisterEmailField().getText();
 
-        UserModel user = new UserModel();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setId(UUID.randomUUID().toString());
-        user.setAdmin(username.toLowerCase().contains("admin"));
+        UserModel user = new UserModel.Builder().id(UUID.randomUUID().toString()).
+                email(email).password(password).username(username).
+                admin(username.toLowerCase().contains("admin")).build();
+
 
         boolean success = userManager.registerUser(user);
         if (success) {
