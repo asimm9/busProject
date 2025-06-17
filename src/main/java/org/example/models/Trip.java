@@ -12,7 +12,7 @@ public class Trip {
     private String origin;
     private String destination;
     private String departureTime;
-    private LocalDateTime time;
+    private String time;
     private Vehicle vehicle;
     private List<Seat> seatList;
 
@@ -45,11 +45,11 @@ public class Trip {
     }
 
 
-    public LocalDateTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

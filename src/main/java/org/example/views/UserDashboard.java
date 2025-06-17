@@ -33,6 +33,7 @@ public class UserDashboard {
     public VBox tripListBox;
     public Button reserveButton;
     public SeatLayout seatLayout;
+    public Button logoutButton;
     private boolean isBus;
 
     public boolean isBus() {
@@ -180,6 +181,13 @@ public class UserDashboard {
         reserveButton.setPadding(new Insets(10, 25, 10, 25));
         reserveButton.setOnAction(e -> reservationController.handleReservation());
 
+        logoutButton = new Button("Çıkış Yap");
+        logoutButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        logoutButton.setTextFill(Color.web("#8b0033"));
+        logoutButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+        logoutButton.setPadding(new Insets(10, 25, 10, 25));
+        logoutButton.setOnAction(actionEvent -> reservationController.handleLogout());
+
         // Ekrana ekle
         root.getChildren().addAll(
                 welcomeBox,
@@ -189,7 +197,8 @@ public class UserDashboard {
                 searchTripButton,
                 tripLabel,
                 tripListBox,
-                reserveButton
+                reserveButton,
+                logoutButton
         );
 
         Scene scene = new Scene(root, 520, 700);
@@ -235,4 +244,11 @@ public class UserDashboard {
     }
 
 
+    public void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Bilgi");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

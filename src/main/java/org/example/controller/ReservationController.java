@@ -30,10 +30,11 @@ import java.util.UUID;
 public class ReservationController {
 
     private final UserDashboard view;
-    private final UserModel user;
+    private UserModel user;
     private final TripManager tripManager = TripManager.getInstance();
     private final ReservationManager reservationManager =  ReservationManager.getInstance();
     private final SeatManager seatManager = SeatManager.getInstance();
+    private List<Seat> selectedSeats;
 
 
     public ReservationController(UserDashboard view, UserModel user) {
@@ -110,34 +111,41 @@ public class ReservationController {
             return;
         }
         // İstediğin işlemi burada yapabilirsin (veritabanına kayıt vs.)
+        if (view.seatLayout.selectedSeats.isEmpty()){
+            view.showAlert("Koltuk Seçmediniz");
+        }else {
+            if (view.seatLayout.controller.manager.insertSeatsByTrip(view.seatLayout.selectedSeats)){
+                if(view.seatLayout.secilenKoltuklar.size() != 0){
 
+                    List<Seat> seatList = seatManager.getSeatByTripAndUserID(selected.getTripID(),user.getId());
+                    for (int i = 0; i < seatList.size(); i++) {
+                        Seat seat = seatList.get(i);
+                        Reservation reservation = new Reservation();
+                        reservation.setId(UUID.randomUUID().toString());
+                        reservation.setUser(user);
+                        reservation.setTrip(selected);
+                        reservation.setSeat(seat);
+                        LocalDateTime dateTime = LocalDateTime.now();
+                        reservation.setReservationDateTime(dateTime);
+                        reservationManager.createReservation(reservation);
+                    }
 
-        if(view.seatLayout.secilenKoltuklar.size() != 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Rezervasyon");
+                    alert.setHeaderText(null);
+                    alert.setContentText(
+                            selected.getOrigin() + " → " + selected.getDestination() +
+                                    "\nTarih: " + selected.getDepartureTime() + " Saat: " + selected.getTime() +
+                                    "\nRezervasyon işlemi başarılı!"
+                    );
 
-            List<Seat> seatList = seatManager.getSeatByTripAndUserID(selected.getTripID(),user.getId());
-            for (int i = 0; i < seatList.size(); i++) {
-                Seat seat = seatList.get(i);
-                Reservation reservation = new Reservation();
-                reservation.setId(UUID.randomUUID().toString());
-                reservation.setUser(user);
-                reservation.setTrip(selected);
-                reservation.setSeat(seat);
-                LocalDateTime dateTime = LocalDateTime.now();
-                reservation.setReservationDateTime(dateTime);
-                reservationManager.createReservation(reservation);
+                    alert.showAndWait();
+                }
+
             }
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Rezervasyon");
-            alert.setHeaderText(null);
-            alert.setContentText(
-                    selected.getOrigin() + " → " + selected.getDestination() +
-                            "\nTarih: " + selected.getDepartureTime() + " Saat: " + selected.getTime() +
-                            "\nRezervasyon işlemi başarılı!"
-            );
-
-            alert.showAndWait();
         }
+
+
 
 
     }
@@ -147,18 +155,20 @@ public class ReservationController {
     }
 
     public void handleListReservation(UserModel user) {
-        List<Reservation> reservationList =  reservationManager.getReservations(user.getId());
+        List<Reservation> reservationList = reservationManager.getReservations(user.getId());
 
-        if(reservationList == null || reservationList.isEmpty()){
+        if (reservationList == null || reservationList.isEmpty()) {
             showInfo("Hiç bir rezervasyon bulunamadı.");
             return;
         }
 
         Stage listReservationStage = new Stage();
-        listReservationStage.setTitle("Tüm rezervasyonlar.");
+        listReservationStage.setTitle("Tüm rezervasyonlar");
 
         VBox cardBox = new VBox(12);
         cardBox.setPadding(new Insets(15));
+
+        // 🎨 Sayfa arka planı için GRADIENT stil eklendi
         cardBox.setStyle("-fx-background-color: linear-gradient(to bottom, #f0f2f5, #e9eaf2);");
 
         for (Reservation reservation : reservationList) {
@@ -166,39 +176,46 @@ public class ReservationController {
             cardBox.getChildren().add(card);
         }
 
-        Scene scene = new Scene(new ScrollPane(cardBox), 430, 450);
+        ScrollPane scrollPane = new ScrollPane(cardBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;"); // ScrollPane görünümünü de düzelt
+
+        Scene scene = new Scene(scrollPane, 450, 500); // genişlik biraz artırıldı
         listReservationStage.setScene(scene);
         listReservationStage.show();
     }
 
     private VBox createReservationCard(Reservation reservation) {
-        VBox card = new VBox(7);
-        card.setPadding(new Insets(12));
-        card.setSpacing(5);
+        VBox card = new VBox(10); // spacing arttırıldı
+        card.setPadding(new Insets(16));
         card.setStyle("-fx-background-color: white;" +
-                "-fx-background-radius: 14;" +
-                "-fx-border-radius: 14;" +
-                "-fx-border-color: #d2d2d2;" +
-                "-fx-border-width: 1;" +
-                "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);");
+                "-fx-background-radius: 16;" +
+                "-fx-border-radius: 16;" +
+                "-fx-border-color: #cccccc;" +
+                "-fx-border-width: 1.2;" +
+                "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 10, 0, 0, 3);");
 
-        card.setMaxWidth(360);
+        card.setMaxWidth(440); // Genişlik artırıldı
 
-        Label userID = new Label(reservation.getUser().getId());
-        userID.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        userID.setTextFill(Color.web("#3b5998"));
+        Label tripLabel = new Label(reservation.getTrip().getOrigin() + " → " + reservation.getTrip().getDestination());
+        tripLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16)); // kalın ve büyük yazı
+        tripLabel.setTextFill(Color.web("#2a4d9b"));
 
-        Label tripLabel = new Label(reservation.getTrip().getOrigin() + " => " + reservation.getTrip().getDestination());
-        tripLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-        tripLabel.setTextFill(Color.web("#3b5998"));
-
-        Label seatLabel = new Label(" null değer");
-        seatLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        Label seatLabel = new Label("Koltuk Numarası: " + reservation.getSeat().getSeatID());
+        seatLabel.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 15));
         seatLabel.setTextFill(Color.web("#3b5998"));
 
-        card.getChildren().addAll(userID, tripLabel, seatLabel);
+        Label dateLabel = new Label("Tarih: " + reservation.getTrip().getDepartureTime());
+        dateLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        dateLabel.setTextFill(Color.web("#444444"));
 
-        // Sürükleme için değişkenler
+        Label timeLabel = new Label("Saat: " + reservation.getTrip().getTime());
+        timeLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        timeLabel.setTextFill(Color.web("#444444"));
+
+        card.getChildren().addAll(tripLabel, seatLabel, dateLabel, timeLabel);
+
+        // Sürükleme işlemleri
         final double[] mouseAnchorX = new double[1];
 
         card.setOnMousePressed(event -> {
@@ -207,30 +224,24 @@ public class ReservationController {
 
         card.setOnMouseDragged(event -> {
             double deltaX = event.getSceneX() - mouseAnchorX[0];
-            if (deltaX < 0) { // sola sürükleniyorsa
+            if (deltaX < 0) {
                 card.setTranslateX(deltaX);
             }
         });
 
         card.setOnMouseReleased(event -> {
             double deltaX = card.getTranslateX();
-            if (deltaX < -120) { // Eşik değeri, yeterince sola sürüklediyse sil
-                // Önce UI'dan kaldır
+            if (deltaX < -120) {
                 ((VBox) card.getParent()).getChildren().remove(card);
-
-                // Sonra veri kaynağından sil
                 if (reservationManager.cancelReservation(reservation)) {
                     System.out.println("silindiiiiiiiiiiii");
-                } // TripManager'da bu metodu eklemelisin
-
-                // İsteğe bağlı: "Sefer silindi" mesajı göster
+                }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Rezervasyon Silindi");
                 alert.setHeaderText(null);
                 alert.setContentText("Rezervasyon başarıyla silindi.");
                 alert.showAndWait();
             } else {
-                // Yeterince sürüklenmediyse kart eski yerine dönsün
                 card.setTranslateX(0);
             }
         });
@@ -246,11 +257,22 @@ public class ReservationController {
         alert.showAndWait();
     }
 
+    public void handleLogout() {
+        user = null;
+        Stage currentStage = (Stage) view.logoutButton.getScene().getWindow();
+        currentStage.close();
+    }
+
     public void handleBusSelected(){
         view.setBus(true);
+        view.busButton.setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
+        view.planeButton.setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");
     }
 
     public void handlePlaneSelected(){
+        view.planeButton.setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
+        view.busButton.setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");
         view.setBus(false);
     }
+
 }

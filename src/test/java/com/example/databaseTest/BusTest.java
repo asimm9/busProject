@@ -4,7 +4,7 @@ import org.example.helper.dao.VehicleDAO;
 import org.example.managers.VehicleManager;
 import org.example.models.Bus;
 import org.example.models.Seat;
-import org.example.models.VehicleType;
+import org.example.models.enums.VehicleType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

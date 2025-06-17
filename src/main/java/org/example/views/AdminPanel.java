@@ -33,15 +33,30 @@ public class AdminPanel {
     private Label messageLabel;
     private ToggleButton busButton;
     private ToggleButton planeButton;
+    public Button logoutButton;
     private boolean isBus;
 
+    //private değişkenlerin getter ve setterları
     public boolean isBus() {return isBus;}
-    public void setBus(boolean bus) {isBus = bus;}
+    public void setBus(boolean bus) {isBus = bus;}// Getterlar (Controller erişimi için)
+    public TextField getFromField() { return fromField; }
+    public TextField getToField() { return toField; }
+    public DatePicker getDatePicker() { return datePicker; }
+    public TextField getTimeField() { return timeField; }
+    public TextField getBusIdField() { return busIdField; }
+    public TextField getPlaneIdField() { return planeIdField; }
+    public VBox getBusCard() { return busCard; }
+    public VBox getPlaneCard() { return planeCard; }
+    public Label getMessageLabel() { return messageLabel; }
+    public ToggleButton getBusButton() { return busButton; }
+    public ToggleButton getPlaneButton() { return planeButton; }
 
 
+    //sınıfın constructoru ve controllera bağlandığı nokta
     public AdminPanel(UserModel adminUser) {
         this.adminUser = adminUser;
-        this.controller = new AdminPanelController(this);
+        this.controller = new AdminPanelController(this,adminUser);
+        setBus(true);
         show();
     }
 
@@ -79,7 +94,9 @@ public class AdminPanel {
         planeButton = new ToggleButton("✈️ Uçak");
         busButton.setToggleGroup(transportToggle);
         planeButton.setToggleGroup(transportToggle);
+
         busButton.setSelected(true);
+        planeButton.setSelected(false);
         busButton.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         planeButton.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         busButton.setPrefWidth(100);
@@ -114,6 +131,8 @@ public class AdminPanel {
         VBox timeCard = createLabeledInput("Saat", timeField, "Örn: 13:30");
         timeCard.setAlignment(Pos.CENTER);
         timeCard.setMaxWidth(Double.MAX_VALUE);
+
+
 
         // Otobüs ise otobüs plakası
         busIdField = new TextField();
@@ -192,6 +211,13 @@ public class AdminPanel {
         busCard.setMaxWidth(Double.MAX_VALUE);
         planeCard.setMaxWidth(Double.MAX_VALUE);
 
+        logoutButton = new Button("Çıkış Yap");
+        logoutButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        logoutButton.setTextFill(Color.web("#8b0033"));
+        logoutButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+        logoutButton.setPadding(new Insets(10, 25, 10, 25));
+        logoutButton.setOnAction(actionEvent -> controller.handleLogout());
+
         formBox.getChildren().addAll(
                 transportBox,
                 fromCard,
@@ -200,7 +226,8 @@ public class AdminPanel {
                 timeCard,
                 transportIdStack,
                 buttonRow,
-                messageLabel
+                messageLabel,
+                logoutButton
         );
 
         root.getChildren().addAll(titleLabel, formBox);
@@ -210,18 +237,7 @@ public class AdminPanel {
         stage.show();
     }
 
-    // Getterlar (Controller erişimi için)
-    public TextField getFromField() { return fromField; }
-    public TextField getToField() { return toField; }
-    public DatePicker getDatePicker() { return datePicker; }
-    public TextField getTimeField() { return timeField; }
-    public TextField getBusIdField() { return busIdField; }
-    public TextField getPlaneIdField() { return planeIdField; }
-    public VBox getBusCard() { return busCard; }
-    public VBox getPlaneCard() { return planeCard; }
-    public Label getMessageLabel() { return messageLabel; }
-    public ToggleButton getBusButton() { return busButton; }
-    public ToggleButton getPlaneButton() { return planeButton; }
+
 
     // Ortak stil (TextField için)
     private VBox createLabeledInput(String title, TextField input, String prompt) {

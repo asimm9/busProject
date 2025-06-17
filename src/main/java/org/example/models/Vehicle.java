@@ -1,6 +1,9 @@
 package org.example.models;
 
 
+import org.example.models.VehicleType;
+
+import java.util.Arrays;
 import java.util.Objects;
 
 abstract public class Vehicle {
@@ -9,6 +12,42 @@ abstract public class Vehicle {
     private int totalSeats;
     private String seatType;
     private VehicleType vehicleType;
+    private int price;
+
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id='" + id + '\'' +
+                ", seatLayout=" + Arrays.toString(seatLayout) +
+                ", totalSeats=" + totalSeats +
+                ", seatType='" + seatType + '\'' +
+                ", vehicleType=" + vehicleType +
+                ", price=" + price +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Vehicle vehicle)) return false;
+        return getTotalSeats() == vehicle.getTotalSeats() && getPrice() == vehicle.getPrice() && Objects.equals(getId(), vehicle.getId()) && Objects.deepEquals(getSeatLayout(), vehicle.getSeatLayout()) && Objects.equals(getSeatType(), vehicle.getSeatType()) && getVehicleType() == vehicle.getVehicleType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), Arrays.deepHashCode(getSeatLayout()), getTotalSeats(), getSeatType(), getVehicleType(), getPrice());
+    }
+
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+
 
     public VehicleType getVehicleType() {
         return vehicleType;
@@ -50,25 +89,4 @@ abstract public class Vehicle {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Vehicle{" +
-                "id='" + id + '\'' +
-                ", seatLayout=" + seatLayout +
-                ", totalSeats=" + totalSeats +
-                ", seatType='" + seatType + '\'' +
-                ", vehicleType=" + vehicleType +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Vehicle vehicle)) return false;
-        return getTotalSeats() == vehicle.getTotalSeats() && Objects.equals(getId(), vehicle.getId()) && Objects.equals(getSeatLayout(), vehicle.getSeatLayout()) && Objects.equals(getSeatType(), vehicle.getSeatType()) && getVehicleType() == vehicle.getVehicleType();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getSeatLayout(), getTotalSeats(), getSeatType(), getVehicleType());
-    }
 }

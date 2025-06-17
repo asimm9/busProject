@@ -58,7 +58,7 @@ public class TripDAO {
                 String origin = rs.getString("origin");
                 String destination = rs.getString("destination");
                 String departureTime = rs.getString("departure_time");
-                LocalDateTime time = LocalDateTime.parse(rs.getString("time"));
+                String time = rs.getString("time");
                 String busId = rs.getString("vehicle_id");
 
                 Trip trip = new Trip();
@@ -92,7 +92,7 @@ public class TripDAO {
                     trip.setOrigin(rs.getString("origin"));
                     trip.setDestination(rs.getString("destination"));
                     trip.setDepartureTime(rs.getString("departure_time"));
-                    trip.setTime(LocalDateTime.parse(rs.getString("time")));
+                    trip.setTime(rs.getString("time"));
                     String vehicleId = rs.getString("vehicle_id");
                     trip.setVehicle(vehicleDAO.getVehicle(vehicleId,VehicleType.Plane));
                 }
@@ -128,7 +128,7 @@ public class TripDAO {
                 trip.setDepartureTime(departureTime);
                 Vehicle vehicle = vehicleDAO.getVehicle(vehicleIdId,vehicleType);
                 trip.setVehicle(vehicle);
-                trip.setTime(LocalDateTime.parse(timeValue));
+                trip.setTime(timeValue);
                 if (vehicle == null) {
                     System.out.println(" bu eklenmedi");
                 }else{

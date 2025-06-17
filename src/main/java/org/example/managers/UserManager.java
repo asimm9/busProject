@@ -35,4 +35,9 @@ public class UserManager {
         return userDAO.findByUsernameAndPassword(username, password);
     }
 
+    public UserModel getUserByEmail(String email) {
+        return userDAO.getUserByEmail(email);
+    }
+
+
 }

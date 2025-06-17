@@ -2,6 +2,7 @@ package org.example.controller;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -32,13 +33,14 @@ import java.util.UUID;
 public class AdminPanelController {
 
     private final AdminPanel view;
+    private UserModel user;
     private TripManager tripManager = TripManager.getInstance();
     private VehicleManager vehicleManager = VehicleManager.getInstance();
     private SeatManager seatManager = SeatManager.getInstance();
 
     //viewa bağlanma kısmı controller constructerında yapılıyor.
-    public AdminPanelController(AdminPanel view) {
-        this.view = view;
+    public AdminPanelController(AdminPanel view,UserModel user) {
+        this.view = view; this.user = user;
     }
 
     //Otobüs sekmesinde seçili olduğumuzu gösteriyor
@@ -63,7 +65,8 @@ public class AdminPanelController {
     public void handleAddTrip() {
         String origin = view.getFromField().getText();
         String destination = view.getToField().getText();
-        LocalDateTime now = LocalDateTime.now();
+        String now = view.getTimeField().getText();
+
         String busID = view.getBusCard().isVisible() ? view.getBusIdField().getText() : view.getPlaneIdField().getText();
         LocalDate selected = view.getDatePicker().getValue();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -117,6 +120,9 @@ public class AdminPanelController {
         cardsBox.setAlignment(Pos.TOP_CENTER);
 
         for (Trip trip : tripList) {
+            if (trip.getVehicle() == null) {
+                continue;
+            }
             VBox card = createTripCard(trip);
             cardsBox.getChildren().add(card);
         }
@@ -171,13 +177,14 @@ public class AdminPanelController {
         dateLabel.setFont(Font.font("Arial", 13));
         dateLabel.setTextFill(Color.web("#444444"));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String formattedTime = trip.getTime().format(formatter);
-        Label timeLabel = new Label("Saat: " + formattedTime);
+
+
+        Label timeLabel = new Label("Saat: " + trip.getTime());
         timeLabel.setFont(Font.font("Arial", 13));
         timeLabel.setTextFill(Color.web("#444444"));
 
         Vehicle transportInfo = trip.getVehicle();
+        System.out.println(transportInfo.toString());
         Label transportLabel = new Label(
                 transportInfo.getVehicleType().getName() + " tipi: " + transportInfo.getSeatType()
         );
@@ -250,10 +257,14 @@ public class AdminPanelController {
         TextField idField = new TextField();
 
         Label koltukLabel = new Label("Koltuk Tipi:");
-        TextField busTypeField = new TextField();
+        ComboBox<String> seatTypeComboBox = new ComboBox<>();
+        seatTypeComboBox.getItems().addAll("2+2", "2+1");
+        seatTypeComboBox.setPromptText("Koltuk tipi seçin");
 
         Label totalSeatsLabel = new Label("Toplam Koltuk:");
-        TextField totalSeatsField = new TextField();
+        ComboBox<String> totalSeatsComboBox = new ComboBox<>();
+        totalSeatsComboBox.getItems().addAll("36", "48");
+        totalSeatsComboBox.setPromptText("Koltuk sayısı seçin");
 
         Button saveButton = new Button("Kaydet");
         saveButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
@@ -263,8 +274,9 @@ public class AdminPanelController {
 
         saveButton.setOnAction(event -> {
             String id = idField.getText();
-            String seatType = busTypeField.getText();
-            String totalSeats = totalSeatsField.getText();
+            String seatType = seatTypeComboBox.getValue(); // Text yerine ComboBox'tan alınır
+            String totalSeats = totalSeatsComboBox.getValue();
+
             Vehicle vehicle;
             VehicleType vehicleType;
             if (view.isBus()) {
@@ -369,8 +381,9 @@ public class AdminPanelController {
 
         // Her alan için stil uygulanmış kutular
         VBox plakaBox = styleAsCard(plakaLabel, idField);
-        VBox koltukBox = styleAsCard(koltukLabel, busTypeField);
-        VBox koltukSayiBox = styleAsCard(totalSeatsLabel, totalSeatsField);
+        VBox koltukBox = styleAsCard(koltukLabel, seatTypeComboBox);
+        VBox koltukSayiBox = styleAsCard(totalSeatsLabel, totalSeatsComboBox);
+
 
         VBox formLayout = new VBox(12, plakaBox, koltukBox, koltukSayiBox, saveButton);
         formLayout.setPadding(new Insets(30));
@@ -442,6 +455,11 @@ public class AdminPanelController {
         busListStage.show();
     }
 
+    public void handleLogout(){
+         user = null;
+        Stage currentStage = (Stage) view.logoutButton.getScene().getWindow();
+        currentStage.close();
+    }
 
     //Her bir otobüs için bir car oluşturur
     private VBox createBusCar(Vehicle  vehicle) {
@@ -512,12 +530,18 @@ public class AdminPanelController {
 
     }
 
-    private VBox styleAsCard(Label label, TextField input) {
+
+
+    private VBox styleAsCard(Label label, Node input) {
         label.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         label.setTextFill(Color.web("#3b5998"));
 
-        input.setPromptText("Bilgi giriniz");
-        input.setMaxWidth(Double.MAX_VALUE);
+        if (input instanceof TextField) {
+            ((TextField) input).setPromptText("Bilgi giriniz");
+            ((TextField) input).setMaxWidth(Double.MAX_VALUE);
+        } else if (input instanceof ComboBox) {
+            ((ComboBox<?>) input).setMaxWidth(Double.MAX_VALUE);
+        }
 
         VBox box = new VBox(6, label, input);
         box.setPadding(new Insets(10));
@@ -526,6 +550,7 @@ public class AdminPanelController {
         box.setMaxWidth(300);
         return box;
     }
+
 
 
 }
