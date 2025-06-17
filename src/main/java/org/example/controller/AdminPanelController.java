@@ -26,7 +26,9 @@ import org.example.views.AdminPanel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -266,6 +268,10 @@ public class AdminPanelController {
         totalSeatsComboBox.getItems().addAll("36", "48");
         totalSeatsComboBox.setPromptText("Koltuk sayısı seçin");
 
+        Label priceLabel = new Label("Fiyat:");
+        TextField priceField = new TextField();
+
+
         Button saveButton = new Button("Kaydet");
         saveButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         saveButton.setTextFill(Color.web("#8b0033"));
@@ -276,6 +282,7 @@ public class AdminPanelController {
             String id = idField.getText();
             String seatType = seatTypeComboBox.getValue(); // Text yerine ComboBox'tan alınır
             String totalSeats = totalSeatsComboBox.getValue();
+            String price = priceField.getText();
 
             Vehicle vehicle;
             VehicleType vehicleType;
@@ -290,6 +297,17 @@ public class AdminPanelController {
             vehicle.setId(id);
             vehicle.setTotalSeats(Integer.parseInt(totalSeats));
             vehicle.setVehicleType(vehicleType);
+            vehicle.setPrice(Integer.parseInt(price));
+            if (vehicle instanceof Plane) {
+                List<Integer> numbers = Arrays.asList(23, 28, 35, 48); // 4 integer
+                Random random = new Random();
+
+
+                int randomIndex = random.nextInt(numbers.size());
+                int selectedNumber = numbers.get(randomIndex);
+                ((Plane) vehicle).setBaggage(selectedNumber);
+            }
+
 
             Seat[][] seats;
             int seatNumber = 1;
@@ -383,9 +401,10 @@ public class AdminPanelController {
         VBox plakaBox = styleAsCard(plakaLabel, idField);
         VBox koltukBox = styleAsCard(koltukLabel, seatTypeComboBox);
         VBox koltukSayiBox = styleAsCard(totalSeatsLabel, totalSeatsComboBox);
+        VBox priceBox = styleAsCard(priceLabel,priceField);
 
 
-        VBox formLayout = new VBox(12, plakaBox, koltukBox, koltukSayiBox, saveButton);
+        VBox formLayout = new VBox(12, plakaBox, koltukBox, koltukSayiBox, priceBox, saveButton);
         formLayout.setPadding(new Insets(30));
         formLayout.setAlignment(Pos.CENTER);
 

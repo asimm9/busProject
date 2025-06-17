@@ -21,7 +21,9 @@ public class DatabaseInitializer {
                     "vehicle_id TEXT PRIMARY KEY, " +
                     "seat_type TEXT, " +
                     "total_seats INTEGER, " +
-                    "vehicle_type TEXT" +
+                    "vehicle_type TEXT, " +
+                    "price INTEGER, " +
+                    "baggage INTEGER" +
                     ");"
             );
 

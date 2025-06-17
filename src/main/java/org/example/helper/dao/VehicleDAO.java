@@ -18,12 +18,16 @@ public class VehicleDAO {
 
     //dbye yeni bir otobüs veya yeni bir uçak eklemek için kullanılır.
     public boolean insertVehicle(Vehicle vehicle) {
-        String sql = "INSERT INTO vehicles(vehicle_id, seat_type, total_seats, vehicle_type) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO vehicles(vehicle_id, seat_type, total_seats, vehicle_type, price, baggage) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getId());
             stmt.setString(2, vehicle.getSeatType());
             stmt.setInt(3, vehicle.getTotalSeats());
             stmt.setString(4,vehicle.getVehicleType().toString());
+            stmt.setDouble(5, vehicle.getPrice());
+            if (vehicle instanceof Plane) {
+                stmt.setDouble(6, ((Plane) vehicle).getBaggage());
+            }
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,6 +51,10 @@ public class VehicleDAO {
                 vehicle.setTotalSeats(rs.getInt("total_seats"));
                 String vehicleType = rs.getString("vehicle_type");
                 vehicle.setVehicleType(VehicleType.valueOf(vehicleType));
+                vehicle.setPrice(rs.getInt("price"));
+                if (vehicle instanceof Plane) {
+                    ((Plane) vehicle).setBaggage(rs.getInt("baggage"));
+                }
                 vehicles.add(vehicle);
             }
             return vehicles;
@@ -86,6 +94,10 @@ public class VehicleDAO {
                 vehicle.setSeatType(rs.getString("seat_type"));
                 vehicle.setTotalSeats(rs.getInt("total_seats"));
                 String vehicleTypee = rs.getString("vehicle_type");
+                vehicle.setPrice(rs.getInt("price"));
+                if (vehicle instanceof Plane) {
+                    ((Plane) vehicle).setBaggage(rs.getInt("baggage"));
+                }
                 vehicle.setVehicleType(VehicleType.valueOf(vehicleTypee));
             }
             return vehicle;
