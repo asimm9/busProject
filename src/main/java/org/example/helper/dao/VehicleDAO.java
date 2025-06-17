@@ -5,6 +5,7 @@ import org.example.models.Bus;
 import org.example.models.Plane;
 import org.example.models.Vehicle;
 import org.example.models.VehicleType;
+import org.example.models.factory.VehicleFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +41,7 @@ public class VehicleDAO {
 
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
-                Vehicle vehicle = new Bus();
+                Vehicle vehicle = VehicleFactory.createVehicle(VehicleType.valueOf(rs.getString("vehicle_type")));
                 vehicle.setId(rs.getString("vehicle_id"));
                 vehicle.setSeatType(rs.getString("seat_type"));
                 vehicle.setTotalSeats(rs.getInt("total_seats"));
@@ -77,9 +78,9 @@ public class VehicleDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 if (vehicleType.equals(VehicleType.Plane)){
-                    vehicle = new Plane();
+                    vehicle = VehicleFactory.createVehicle(VehicleType.Plane);
                 }else {
-                    vehicle = new Bus();
+                    vehicle = VehicleFactory.createVehicle(VehicleType.Bus);
                 }
                 vehicle.setId(rs.getString("vehicle_id"));
                 vehicle.setSeatType(rs.getString("seat_type"));

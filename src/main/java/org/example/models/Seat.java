@@ -11,6 +11,39 @@ public class Seat {
     private int row;
     private boolean isReserved;
 
+    //kodun geri kalanına implementasyonu yapılmadı
+    public  static class Builder {
+        private final Seat seat = new Seat();
+        public Builder seatID(String seatID) {
+            seat.seatID = seatID;
+            return this;
+        }
+        public Builder vehicleID(String vehicleID) {
+            seat.vehicleID = vehicleID;
+            return this;
+        }
+        public Builder tripID(String tripID) {
+            seat.tripID = tripID;
+            return this;
+        }
+        public Builder userID(String userID) {
+            seat.userID = userID;
+            return this;
+        }
+        public Builder column(int column) {
+            seat.column = column;
+            return this;
+        }
+        public Builder row(int row) {
+            seat.row = row;
+            return this;
+        }
+        public Seat build() {
+            return seat;
+        }
+    }
+
+
     @Override
     public String toString() {
         return "Seat{" +

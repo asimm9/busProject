@@ -19,6 +19,7 @@ import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
 import org.example.models.*;
 
+import org.example.models.factory.VehicleFactory;
 import org.example.views.AdminPanel;
 
 import java.time.LocalDate;
@@ -267,10 +268,10 @@ public class AdminPanelController {
             Vehicle vehicle;
             VehicleType vehicleType;
             if (view.isBus()) {
-                vehicle = new Bus();
+                vehicle = VehicleFactory.createVehicle(VehicleType.Bus);
                 vehicleType = VehicleType.Bus;
             } else {
-                vehicle = new Plane();
+                vehicle = VehicleFactory.createVehicle(VehicleType.Plane);
                 vehicleType = VehicleType.Plane;
             }
             vehicle.setSeatType(seatType);
