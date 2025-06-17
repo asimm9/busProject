@@ -2,6 +2,9 @@ package org.example.helper.dao;
 
 import org.example.helper.DatabaseConnector;
 import org.example.models.Seat;
+import org.example.models.interfaces.EconomyClass;
+import org.example.models.interfaces.SeatClassStrategy;
+import org.example.models.interfaces.VipClass;
 
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -11,6 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeatDAO {
+
+    public static SeatClassStrategy getSeatClassFromDbValue(String seatType) {
+        if ("VIP".equalsIgnoreCase(seatType)) {
+            return new VipClass();
+        } else {
+            return new EconomyClass();
+        }
+    }
 
     //idye göre tek bir seat getirir dbden
     public static Seat getSeatById(int seatId) {
@@ -27,6 +38,7 @@ public class SeatDAO {
                 seat.setUserID(rs.getString("user_id"));
                 seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
+                seat.setSeatClass(getSeatClassFromDbValue(rs.getString("seat_type")));
                 return seat;
             }
         } catch (SQLException e) {
@@ -51,6 +63,7 @@ public class SeatDAO {
                 seat.setUserID(rs.getString("user_id"));
                 seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
+                seat.setSeatClass(getSeatClassFromDbValue(rs.getString("seat_type")));
                 seats.add(seat);
             }
             return seats;
@@ -62,7 +75,7 @@ public class SeatDAO {
 
     //kullanıcı koltuk seçtikten sonra veya koltuğunu iptal ettikten sonra dbde o seati günceller
     public boolean updatesSeatByTrip(List<Seat> seats) {
-        String sql = "UPDATE seats SET is_reserved = ?, user_id = ?, trip_id = ? WHERE seat_id = ? AND vehicle_id = ?";
+        String sql = "UPDATE seats SET is_reserved = ?, user_id = ?, trip_id = ?, seat_type = ? WHERE seat_id = ? AND vehicle_id = ?";
 
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
 
@@ -70,8 +83,9 @@ public class SeatDAO {
                 stmt.setInt(1, seat.isReserved() ? 1 : 0);
                 stmt.setString(2, seat.getUserID());
                 stmt.setString(3, seat.getTripID());
-                stmt.setString(4, seat.getSeatID());
-                stmt.setString(5, seat.getVehicleID());
+                stmt.setString(4, seat.getSeatClass().getClassName());
+                stmt.setString(5, seat.getSeatID());
+                stmt.setString(6, seat.getVehicleID());
                 stmt.addBatch();
             }
             int[] result = stmt.executeBatch();
@@ -89,39 +103,40 @@ public class SeatDAO {
 
     //admin her otobüse göre seatleri otobüs tipi ve koltuk sayısına göre dbye ekler
     public boolean insertSeatByBusID(Seat[][] seats) {
-    String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, vehicle_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO seats(seat_id, row_number, column_number, is_reserved, user_id, trip_id, vehicle_id, seat_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
-        for (int row = 0; row < seats.length; row++) {
-            for (int column = 0; column < seats[row].length; column++) {
-                stmt.setString(1, seats[row][column].getSeatID());
-                stmt.setInt(2,  seats[row][column].getRow());
-                stmt.setInt(3,  seats[row][column].getColumn());
-                stmt.setInt(4,  seats[row][column].isReserved() ? 1 : 0);
-                stmt.setString(5,  seats[row][column].getUserID());
-                stmt.setString(6, seats[row][column].getTripID());
-                stmt.setString(7, seats[row][column].getVehicleID());
-                stmt.addBatch();
+        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
+            for (int row = 0; row < seats.length; row++) {
+                for (int column = 0; column < seats[row].length; column++) {
+                    Seat s = seats[row][column];
+                    stmt.setString(1, s.getSeatID());
+                    stmt.setInt(2,  s.getRow());
+                    stmt.setInt(3,  s.getColumn());
+                    stmt.setInt(4,  s.isReserved() ? 1 : 0);
+                    stmt.setString(5,  s.getUserID());
+                    stmt.setString(6, s.getTripID());
+                    stmt.setString(7, s.getVehicleID());
+                    stmt.setString(8, s.getSeatClass().getClassName());
+                    stmt.addBatch();
+                }
             }
-
-        }
-        int[] result = stmt.executeBatch();
-        for (int i : result) {
-            if (i != 1) {
-                return false;
+            int[] result = stmt.executeBatch();
+            for (int i : result) {
+                if (i != 1) {
+                    return false;
+                }
             }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return true;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
-    }
     }
 
     //sefer ve kullanıcıya göre seçilen koltuğu getirir.
     public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
         String sql = "SELECT * FROM seats WHERE trip_id = ? AND user_id = ?";
-        List<Seat> seatList = new ArrayList();
+        List<Seat> seatList = new ArrayList<>();
         try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, tripID);
             stmt.setString(2, userID);
@@ -135,7 +150,7 @@ public class SeatDAO {
                 seat.setUserID(rs.getString("user_id"));
                 seat.setVehicleID(rs.getString("vehicle_id"));
                 seat.setTripID(rs.getString("trip_id"));
-                seat.setSeatID(rs.getString("seat_id"));
+                seat.setSeatClass(getSeatClassFromDbValue(rs.getString("seat_type")));
                 seatList.add(seat);
             }
             return seatList;
@@ -144,7 +159,4 @@ public class SeatDAO {
             return null;
         }
     }
-
-
-
 }

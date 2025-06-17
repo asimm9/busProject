@@ -25,7 +25,7 @@ public class ReservationManager {
         return instance;
     }
 
-    // ✅ Observer kayıt işlemleri
+    // Observer kayıt işlemleri
     public void registerObserver(ReservationObserver observer) {
         observers.add(observer);
     }
@@ -34,7 +34,7 @@ public class ReservationManager {
         observers.remove(observer);
     }
 
-    // ✅ Gözlemcilere bildirim metodları
+    // Gözlemcilere bildirim metodları
     private void notifyReservationCreated(Reservation reservation) {
         for (ReservationObserver observer : observers) {
             observer.onReservationAdded(reservation);
@@ -47,7 +47,7 @@ public class ReservationManager {
         }
     }
 
-    // ✅ Rezervasyon işlemleri (bildirimli)
+    //  Rezervasyon işlemleri (bildirimli)
     public boolean createReservation(Reservation reservation) {
         boolean success = reservationDAO.createReservation(reservation);
         if (success) {
