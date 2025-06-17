@@ -18,25 +18,14 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.example.controller.LoginController;
-import org.example.models.UserModel;
 import org.example.managers.UserManager;
-
-import java.util.UUID;
 
 public class LoginApp {
 
+    //LoginApp view sınıfının bileşenleri
     private VBox formBox;
     private Scene scene;
     private Stage stage;
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     private final LoginController controller;
     private TextField usernameField;
     private PasswordField passwordField;
@@ -44,6 +33,7 @@ public class LoginApp {
     private PasswordField registerPasswordField;
     private TextField registerUsernameField;
 
+    //private değişkenlerin getter ve setterları
     public TextField getRegisterEmailField() {
         return registerEmailField;
     }
@@ -74,15 +64,21 @@ public class LoginApp {
     public void setPasswordField(PasswordField passwordField) {
         this.passwordField = passwordField;
     }
+    public Stage getStage() {
+        return stage;
+    }
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
-    private final UserManager userManager = UserManager.getInstance();
-
+    //sınıfn constructorı controllera burdan bağlanıyor.
     public LoginApp(){
         this.controller = new LoginController(this);
         start();
     }
 
 
+    //sayfanın çizildiği metod buarası
     public void start() {
         stage = new Stage();
 
@@ -176,6 +172,7 @@ public class LoginApp {
         smokeTimeline.play();
     }
 
+    //giriş yapma sayfası.
     private void showLoginForm() {
         formBox.getChildren().clear();
 
@@ -250,12 +247,15 @@ public class LoginApp {
         formBox.getChildren().addAll(registerEmailField, registerUsernameField, registerPasswordField, registerButton, linkBox);
     }
 
+
+    //tüm text fieldların styleı burda yazıldı
     private void styleInputField(TextField field) {
         field.setFont(Font.font("Arial", 14));
         field.setStyle("-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 6 10 6 10;");
         field.setMaxWidth(220);
     }
 
+    //bu viewda kullanılar tüm buttonların styleları burda yazıldı.
     private void styleButton(Button button) {
         button.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         button.setTextFill(Color.web("#89253E"));
@@ -263,6 +263,7 @@ public class LoginApp {
         button.setPadding(new Insets(8, 20, 8, 20));
     }
 
+    //alert mesaggges göstermek istediğimizde bu metodu çağırıp istediğimiz mesajı kullanıcıya gösterbiliyoruz.
     public void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Bilgi");

@@ -49,13 +49,28 @@ public class LoginController {
         String username = view.getRegisterUsernameField().getText();
         String password = view.getRegisterPasswordField().getText();
         String email =  view.getRegisterEmailField().getText();
+        boolean success = false;
+        UserModel user = null;
 
-        UserModel user = new UserModel.Builder().id(UUID.randomUUID().toString()).
-                email(email).password(password).username(username).
-                admin(username.toLowerCase().contains("admin")).build();
+        if (username != null && !username.trim().isEmpty() &&
+                password != null && !password.trim().isEmpty() &&
+                email != null && !email.trim().isEmpty()) {
+            if(userManager.getUserByEmail(username)!=null) {
+                view.showAlert("Bu Emaile ait kullanıcı halihazırda bulunmakta");
+            }else{
+
+                user = new UserModel.Builder().id(UUID.randomUUID().toString()).
+                        email(email).password(password).username(username).
+                        admin(username.toLowerCase().contains("admin")).build();
+                success = userManager.registerUser(user);
+            }
+        }else{
+            view.showAlert("Lütfen tüm alanları doldurunuz");
+        }
 
 
-        boolean success = userManager.registerUser(user);
+
+
         if (success) {
             view.getStage().close();
             if (user.isAdmin()) {
@@ -63,8 +78,6 @@ public class LoginController {
             } else {
                 new UserDashboard(user);
             }
-        } else {
-            view.showAlert("Bu kullanıcı zaten kayıtlı!");
         }
     }
 }

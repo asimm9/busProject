@@ -94,4 +94,23 @@ public class UserDAO {
         }
     }
 
+    public UserModel getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        UserModel user;
+        try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user =new UserModel.Builder().id(rs.getString("id"))
+                        .username(rs.getString("username")).password(rs.getString("password"))
+                        .email(rs.getString("email")).admin(rs.getBoolean("isadmin")).build();
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
 }
