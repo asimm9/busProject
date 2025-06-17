@@ -1,0 +1,26 @@
+çıkış yapma
+sefer saati kaydeilen değil güncel saati gösteriyor
+otobüs tipi ve koltuk sayısı seçenek şeklinde olsun
+kullanıcı sefer ararken otobüs mü uçak mı seçili gözüksün
+koltuk seçince pencere kapanmıyor
+koltuk doluluğu gözükmüyor
+rezervasyon bilgilerinde koltuk no yazmıyor (tüm rezervasyonlar bilgiler eksik)
+aynı koltuğa rezervasyon yapılabiliyor
+fiyat bilgisi eklenebilir
+saat bilgileri saçma sapan
+35 koltuklu otobüs eklenebiliyor
+uçakların plaksı var
+sefer listesi açılmıyor
+kayıtlı kullanıcı yeniden kaydolabiliyor
+sefer aradıktan sonra gün değiştirince hata veriyor
+uçak rezervasyon eklenmemiş
+otobüs ve uçaklar ayrı ayrı gözükmüyor
+1 kere eklenen otobüs bir daha eklenemiyor
+araç plakarı seçerken liste şeklinde gözükmeli
+sefer oluştuturken şehirler liste şeklinde açılmalı yoksa herhangi bir yazım hatasında yine de sefer eklenebiliyor
+sanırım koltuk sayısını 36 dan farklı girince koltuk seçme ekranı açılmıyor
+
+
+
+
+
