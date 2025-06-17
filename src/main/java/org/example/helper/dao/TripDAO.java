@@ -104,13 +104,14 @@ public class TripDAO {
     }
 
     //kullanıcı kısmında tripleri filtrelemek için kullanılır nereden nereye sorusunun cevabıdır
-    public List<Trip> getTripByFilteredParameters(String origin, String destination, VehicleType vehicleType) {
-        String sql = "SELECT * FROM trips WHERE origin = ? AND destination = ?";
+    public List<Trip> getTripByFilteredParameters(String origin, String destination,String departureTime,VehicleType vehicleType) {
+        String sql = "SELECT * FROM trips WHERE origin = ? AND destination = ? AND departure_time = ?";
         List<Trip> trips = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, origin);
             statement.setString(2, destination);
+            statement.setString(3, departureTime);
             ResultSet rs = statement.executeQuery();
             VehicleDAO vehicleDAO = new VehicleDAO();
             while (rs.next()) {
@@ -118,14 +119,14 @@ public class TripDAO {
                 String originValue = rs.getString("origin");
                 String destinationValue = rs.getString("destination");
                 String vehicleIdId = rs.getString("vehicle_id");
-                String departureTime = rs.getString("departure_time");
+                String departureTimeValue = rs.getString("departure_time");
                 String timeValue = rs.getString("time");
 
                 Trip trip = new Trip();
                 trip.setTripID(tripID);
                 trip.setOrigin(originValue);
                 trip.setDestination(destinationValue);
-                trip.setDepartureTime(departureTime);
+                trip.setDepartureTime(departureTimeValue);
                 Vehicle vehicle = vehicleDAO.getVehicle(vehicleIdId,vehicleType);
                 trip.setVehicle(vehicle);
                 trip.setTime(timeValue);

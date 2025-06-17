@@ -24,6 +24,7 @@ import org.example.views.UserDashboard;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +48,9 @@ public class ReservationController {
     public void handleSearchTrips() {
         String departure = view.departureBox.getValue();
         String arrival = view.arrivalBox.getValue();
-        LocalDate date = view.datePicker.getValue();
+        LocalDate selected = view.datePicker.getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formatted = selected.format(formatter);
         VehicleType vehicleType;
         if(view.isBus()){
             vehicleType  = VehicleType.Bus;
@@ -56,7 +59,7 @@ public class ReservationController {
         }
 
 
-        List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival,vehicleType);
+        List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival,formatted,vehicleType);
 
         VBox tripListBox = view.tripListBox;
         tripListBox.getChildren().clear();

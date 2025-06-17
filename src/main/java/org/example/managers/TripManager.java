@@ -33,5 +33,6 @@ public class TripManager {
     public Trip getTripById(String id){return tripDAO.getTrip(id);}
 
     //nerden nereye filtrelerken bu metod kullanılır ve ona ggöre seferler listelenir.
-    public List<Trip> getTripByFilteredParameters(String from, String to, VehicleType vehicleType){return tripDAO.getTripByFilteredParameters(from, to,vehicleType);}
+    public List<Trip> getTripByFilteredParameters(String from, String to,String departureTime, VehicleType vehicleType){
+        return tripDAO.getTripByFilteredParameters(from, to, departureTime, vehicleType);}
 }
