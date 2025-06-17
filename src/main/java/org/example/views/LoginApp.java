@@ -37,32 +37,17 @@ public class LoginApp {
     public TextField getRegisterEmailField() {
         return registerEmailField;
     }
-    public void setRegisterEmailField(TextField registerEmailField) {
-        this.registerEmailField = registerEmailField;
-    }
     public PasswordField getRegisterPasswordField() {
         return registerPasswordField;
-    }
-    public void setRegisterPasswordField(PasswordField registerPasswordField) {
-        this.registerPasswordField = registerPasswordField;
     }
     public TextField getRegisterUsernameField() {
         return registerUsernameField;
     }
-    public void setRegisterUsernameField(TextField registerUsernameField) {
-        this.registerUsernameField = registerUsernameField;
-    }
     public TextField getUsernameField() {
         return usernameField;
     }
-    public void setUsernameField(TextField usernameField) {
-        this.usernameField = usernameField;
-    }
     public PasswordField getPasswordField() {
         return passwordField;
-    }
-    public void setPasswordField(PasswordField passwordField) {
-        this.passwordField = passwordField;
     }
     public Stage getStage() {
         return stage;

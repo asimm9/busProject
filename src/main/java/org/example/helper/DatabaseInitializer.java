@@ -48,6 +48,7 @@ public class DatabaseInitializer {
                     "user_id TEXT, " +
                     "trip_id TEXT, " +
                     "vehicle_id TEXT, " +
+                    "seat_type TEXT, " +
                     "FOREIGN KEY(trip_id) REFERENCES trips(trip_id), " +
                     "FOREIGN KEY(vehicle_id) REFERENCES vehicles(vehicle_id), " +
                     "FOREIGN KEY(user_id) REFERENCES users(id)"+

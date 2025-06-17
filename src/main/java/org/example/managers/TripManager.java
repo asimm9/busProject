@@ -19,6 +19,7 @@ public class TripManager {
         return instance;
     }
 
+
     //database'e Trip eklemek için kullanılır return type
     public boolean createTrip(Trip trip) {return tripDAO.insertTrip(trip);}
 

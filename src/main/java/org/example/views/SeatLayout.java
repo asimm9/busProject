@@ -14,6 +14,8 @@ import org.example.controller.SeatLayoutController;
 import org.example.models.Seat;
 import org.example.models.Trip;
 import org.example.models.UserModel;
+import org.example.models.interfaces.EconomyClass;
+import org.example.models.interfaces.VipClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,6 +186,11 @@ public class SeatLayout {
         seat.setRow(row);
         seat.setColumn(column);
         seat.setReserved(isReserved);
+        if (row<3){
+            seat.setSeatClass(new VipClass());
+        }else {
+            seat.setSeatClass(new EconomyClass());
+        }
         return seat;
     }
 
