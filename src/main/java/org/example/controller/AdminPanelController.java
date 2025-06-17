@@ -36,6 +36,7 @@ public class AdminPanelController {
 
     private final AdminPanel view;
     private UserModel user;
+    Label plakaLabel;
     private TripManager tripManager = TripManager.getInstance();
     private VehicleManager vehicleManager = VehicleManager.getInstance();
     private SeatManager seatManager = SeatManager.getInstance();
@@ -238,7 +239,7 @@ public class AdminPanelController {
 
     // Bilgi penceresi (liste boşsa)
     private void showInfo(String text) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Tüm Seferler");
         alert.setHeaderText(null);
         alert.setContentText(text);
@@ -250,12 +251,14 @@ public class AdminPanelController {
         Stage formStage = new Stage();
         if (view.isBus()) {
             formStage.setTitle("Otobüs Ekle");
+            plakaLabel = new Label("Plaka:");
         } else {
             formStage.setTitle("Uçak Ekle");
+            plakaLabel = new Label("Uçak ID:");
         }
 
         // Form bileşenleri
-        Label plakaLabel = new Label("Plaka:");
+
         TextField idField = new TextField();
 
         Label koltukLabel = new Label("Koltuk Tipi:");
@@ -427,25 +430,28 @@ public class AdminPanelController {
     }
 
 
-    //tüm otobüsleri listeler
+    //tüm araçları türüne göre listeler
     public void handleListBuses() {
         List<Vehicle> vehicleList = vehicleManager.getAllVehicles();
-
-        if (vehicleList == null || vehicleList.isEmpty()) {
-            showInfo("Hiç Otobüs Bulunamadı");
-            return;
-        }
-
-        Stage busListStage = new Stage();
-        busListStage.setTitle("Otobüs Listesi");
-
         VBox cardContainer = new VBox(20); // Kartlar arası boşluk artırıldı
         cardContainer.setPadding(new Insets(20));
         cardContainer.setAlignment(Pos.TOP_CENTER);
 
         for (Vehicle vehicle : vehicleList) {
-            VBox card = createBusCar(vehicle);
-            cardContainer.getChildren().add(card);
+            if(view.isBus()){
+                VBox card = createVehicleCard(vehicle);
+                if(vehicle.getVehicleType()==VehicleType.Bus){
+                cardContainer.getChildren().add(card);
+            }}
+            else{
+                VBox card = createVehicleCard(vehicle);
+                if(vehicle.getVehicleType()== VehicleType.Plane){
+                    cardContainer.getChildren().add(card);
+                }
+
+            }
+
+
         }
 
         ScrollPane scrollPane = new ScrollPane(cardContainer);
@@ -470,8 +476,32 @@ public class AdminPanelController {
         root.setPadding(new Insets(10));
 
         Scene scene = new Scene(root, 400, 500);
-        busListStage.setScene(scene);
-        busListStage.show();
+
+        if (view.isBus()) {
+            if (vehicleList == null || vehicleList.isEmpty()) {
+
+                showInfo("Hiç Otobüs Bulunamadı");
+                return;
+            }
+                Stage busListStage = new Stage();
+                busListStage.setTitle("Otobüs Listesi");
+                busListStage.setScene(scene);
+                busListStage.show();
+
+        }else {
+            if (vehicleList == null || vehicleList.isEmpty()) {
+                showInfo("Hiç Uçak bulunamadı");
+                return;
+            }
+            Stage planeListStage = new Stage();
+            planeListStage.setTitle("Uçak Listesi");
+            planeListStage.setScene(scene);
+            planeListStage.show();
+
+        }
+
+
+
     }
 
     public void handleLogout(){
@@ -481,9 +511,9 @@ public class AdminPanelController {
     }
 
     //Her bir otobüs için bir car oluşturur
-    private VBox createBusCar(Vehicle  vehicle) {
+    private VBox createVehicleCard(Vehicle  vehicle) {
         VBox card = new VBox(7);
-        card.setPadding(new javafx.geometry.Insets(12));
+        card.setPadding(new Insets(12));
         card.setSpacing(5);
         card.setStyle(
                 "-fx-background-color: white;" +
@@ -494,20 +524,29 @@ public class AdminPanelController {
                         "-fx-effect: dropshadow(gaussian, rgba(60,60,100,0.08), 8,0,0,2);"
         );
         card.setMaxWidth(360);
-
-        Label idLabel = new Label("ID: " + vehicle.getId());
+        Label idLabel = null;
+        if(view.isBus()) {
+            idLabel = new Label("Plaka: " + vehicle.getId());
+        }else{
+            idLabel = new Label("ID: " + vehicle.getId());
+        }
         idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         idLabel.setTextFill(Color.web("#3b5998"));
 
         Label seatLabel = new Label("Total Seats: " + vehicle.getTotalSeats());
         seatLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         seatLabel.setTextFill(Color.web("#3b5998"));
+        Label vehicleTypeLabel = null;
+        if(view.isBus()) {
+            vehicleTypeLabel = new Label("Bus Type: " + vehicle.getSeatType());
+        }else{
+            vehicleTypeLabel = new Label("Plane Type: " + vehicle.getSeatType());
 
-        Label busTypeLabel = new Label("Bus Type: " + vehicle.getSeatType());
-        busTypeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
-        busTypeLabel.setTextFill(Color.web("#3b5998"));
+        }
+        vehicleTypeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        vehicleTypeLabel.setTextFill(Color.web("#3b5998"));
 
-        card.getChildren().addAll(idLabel, seatLabel, busTypeLabel);
+        card.getChildren().addAll(idLabel, seatLabel, vehicleTypeLabel);
 
         // Sürükleme için değişkenler
         final double[] mouseAnchorX = new double[1];
