@@ -21,6 +21,8 @@ import org.example.managers.TripManager;
 import org.example.models.*;
 
 import org.example.models.factory.VehicleFactory;
+import org.example.models.interfaces.EconomyClass;
+import org.example.models.interfaces.VipClass;
 import org.example.views.AdminPanel;
 
 import java.time.LocalDate;
@@ -329,6 +331,11 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
+                            if (i<3){
+                                seat.setSeatClass(new VipClass());
+                            }else{
+                                seat.setSeatClass(new EconomyClass());
+                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -344,6 +351,11 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
+                            if (i<3){
+                                seat.setSeatClass(new VipClass());
+                            }else{
+                                seat.setSeatClass(new EconomyClass());
+                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -361,6 +373,11 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
+                            if (i<3){
+                                seat.setSeatClass(new VipClass());
+                            }else{
+                                seat.setSeatClass(new EconomyClass());
+                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -376,6 +393,11 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
+                            if (i<3){
+                                seat.setSeatClass(new VipClass());
+                            }else{
+                                seat.setSeatClass(new EconomyClass());
+                            }
                             seats[i][j] = seat;
                         }
                     }
