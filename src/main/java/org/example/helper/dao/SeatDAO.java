@@ -134,8 +134,33 @@ public class SeatDAO {
     }
 
     //sefer ve kullanıcıya göre seçilen koltuğu getirir.
+    public List<Seat> getSeatByTripAndUserID(String tripID) {
+        String sql = "SELECT * FROM seats WHERE trip_id = ?";
+        List<Seat> seatList = new ArrayList<>();
+        try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, tripID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Seat seat = new Seat();
+                seat.setSeatID(rs.getString("seat_id"));
+                seat.setRow(rs.getInt("row_number"));
+                seat.setColumn(rs.getInt("column_number"));
+                seat.setReserved(rs.getBoolean("is_reserved"));
+                seat.setUserID(rs.getString("user_id"));
+                seat.setVehicleID(rs.getString("vehicle_id"));
+                seat.setTripID(rs.getString("trip_id"));
+                seat.setSeatClass(getSeatClassFromDbValue(rs.getString("seat_type")));
+                seatList.add(seat);
+            }
+            return seatList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
-        String sql = "SELECT * FROM seats WHERE trip_id = ? AND user_id = ?";
+        String sql = "SELECT * FROM seats WHERE trip_id = ?, user_id = ?";
         List<Seat> seatList = new ArrayList<>();
         try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, tripID);
@@ -159,4 +184,22 @@ public class SeatDAO {
             return null;
         }
     }
+
+
+    public boolean deleteSeatsByBusId(String vehicleID){
+        String sql = "DELETE FROM seats WHERE vehicle_id = ?";
+        boolean result = false;
+        try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, vehicleID);
+            int affectedRows = stmt.executeUpdate();
+            System.out.println(affectedRows + " rows affected");
+            result = affectedRows > 0;
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+
+        }
+    }
+
 }

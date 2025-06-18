@@ -79,6 +79,8 @@ public class AdminPanelController {
 
 
         if (!origin.isEmpty() && !destination.isEmpty() /*&& !date.isEmpty() && !now.isEmpty()*/ && !busID.isEmpty()) {
+
+
             Trip trip = new Trip();
             VehicleType vehicleType;
             if (view.isBus()){
@@ -95,11 +97,18 @@ public class AdminPanelController {
             trip.setDepartureTime(formatted);
             trip.setTime(now);
             trip.setVehicle(vehicle);
-            if (tripManager.createTrip(trip)){
-                view.getMessageLabel().setText("Sefer başarıyla eklendi!");
+
+
+            if (tripManager.getTripByBusId(vehicle.getId(),vehicleType) == null){
+                if (tripManager.createTrip(trip)){
+                    view.getMessageLabel().setText("Sefer Eklendi");
+                }else {
+                    view.getMessageLabel().setText("Sefer Oluşturulamadı");
+                }
             }else {
-                view.getMessageLabel().setText("Trip oluşturulamadı.");
+                view.getMessageLabel().setText("Aynı otobüs başka bir sefere eklendi");
             }
+
         } else {
             view.getMessageLabel().setText("Lütfen tüm alanları doldurun!");
 
@@ -109,7 +118,9 @@ public class AdminPanelController {
 
     //tüm tripleri listelediğimiz metod
     public void handleListTrips() {
-        List<Trip> tripList = tripManager.getAllTrips();
+        VehicleType vehicleType;
+        vehicleType = view.isBus() == true ? VehicleType.Bus : VehicleType.Plane;
+        List<Trip> tripList = tripManager.getAllTrips(vehicleType);
 
         if (tripList == null || tripList.isEmpty()) {
             showInfo("Hiç sefer bulunamadı.");
@@ -128,6 +139,7 @@ public class AdminPanelController {
             if (trip.getVehicle() == null) {
                 continue;
             }
+
             VBox card = createTripCard(trip);
             cardsBox.getChildren().add(card);
         }
@@ -157,7 +169,6 @@ public class AdminPanelController {
         listStage.setScene(scene);
         listStage.show();
     }
-
 
     //cardın ui ı burda olur ve silinme işlemi de sola sürüklemeli oluyo metod burda işleniyor
     private VBox createTripCard(Trip trip) {
@@ -451,7 +462,6 @@ public class AdminPanelController {
         formStage.showAndWait();
     }
 
-
     //tüm araçları türüne göre listeler
     public void handleListBuses() {
         List<Vehicle> vehicleList = vehicleManager.getAllVehicles();
@@ -590,8 +600,10 @@ public class AdminPanelController {
                 // Önce UI'dan kaldır
                 ((VBox) card.getParent()).getChildren().remove(card);
 
+                Trip toDeletedTrip = tripManager.getTripByBusId(vehicle.getId(),vehicle.getVehicleType());
+
                 // Sonra veri kaynağından sil
-                if (vehicleManager.deleteVehicle(vehicle)){
+                if (vehicleManager.deleteVehicle(vehicle) && seatManager.deleteByVehicleId(vehicle.getId()) && tripManager.deleteTrip(toDeletedTrip)) {
                     System.out.println("silindiiiiiiiiiiii");
                 } // TripManager'da bu metodu eklemelisin
 

@@ -29,8 +29,16 @@ public class SeatManager {
     }
 
     //sefer ve kullanıcıya göre seçilen koltuğu getirir.
-    public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
+    public List<Seat> getSeatByTripAndUserID(String tripID) {
+        return seatDAO.getSeatByTripAndUserID(tripID);
+    }
+
+    public List<Seat> getSeatByTripandUserId(String tripID, String userID) {
         return seatDAO.getSeatByTripAndUserID(tripID, userID);
+    }
+
+    public boolean deleteByVehicleId(String vehicleID) {
+        return seatDAO.deleteSeatsByBusId(vehicleID);
     }
 
 }

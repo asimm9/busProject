@@ -41,7 +41,7 @@ public class SeatLayout {
         secilenKoltuklar = new ArrayList<>();
         selectedSeats = new ArrayList<>();
         allSeats = new ArrayList<>();
-        reservedSeats = controller.manager.getSeatByTripAndUserID(trip.getTripID(),user.getId()); // dışarıdan dolu koltukları al
+        reservedSeats = controller.manager.getSeatByTripAndUserID(trip.getTripID()); // dışarıdan dolu koltukları al
         this.trip = trip;
         this.user = user;
     }

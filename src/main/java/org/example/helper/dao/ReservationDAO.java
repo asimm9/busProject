@@ -121,4 +121,19 @@ public class ReservationDAO {
         return list;
     }
 
+    public boolean deleteReservationByTripId(String tripId) {
+        String sql = "DELETE FROM reservations WHERE trip_id = ?";
+        boolean result = false;
+        try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, tripId);
+            int affectedRows = stmt.executeUpdate();
+            System.out.println(affectedRows + " rows affected");
+            result = affectedRows >= 0;
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

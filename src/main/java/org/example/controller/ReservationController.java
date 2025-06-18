@@ -25,6 +25,7 @@ import org.example.views.UserDashboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +51,7 @@ public class ReservationController {
         String arrival = view.arrivalBox.getValue();
         LocalDate selected = view.datePicker.getValue();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formatted = selected.format(formatter);
+        String formatted = selected == null ? "" : selected.format(formatter);
         VehicleType vehicleType;
         if(view.isBus()){
             vehicleType  = VehicleType.Bus;
@@ -58,48 +59,55 @@ public class ReservationController {
             vehicleType  = VehicleType.Plane;
         }
 
+        if(departure.trim().isEmpty() || arrival.trim().isEmpty() || formatted.trim().isEmpty()){
+            view.showAlert("Alanların hepsini doldurunuz.");
+        }else{
+            List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival,formatted,vehicleType);
+            VBox tripListBox = view.tripListBox;
+            tripListBox.getChildren().clear();
+            view.selectedTrip = null;
+            view.reserveButton.setDisable(true); // Kart seçilmeden rezerve olmasın
 
-        List<Trip> trips = tripManager.getTripByFilteredParameters(departure, arrival,formatted,vehicleType);
+            if (trips.isEmpty()) {
+                Label noResult = new Label("Uygun sefer bulunamadı.");
+                noResult.setTextFill(Color.WHITE);
+                noResult.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+                tripListBox.getChildren().add(noResult);
+            } else {
+                for (Trip trip : trips) {
+                    Label cityLabel = new Label(trip.getOrigin() + " → " + trip.getDestination());
+                    cityLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+                    cityLabel.setTextFill(Color.web("#3b5998"));
 
-        VBox tripListBox = view.tripListBox;
-        tripListBox.getChildren().clear();
-        view.selectedTrip = null;
-        view.reserveButton.setDisable(true); // Kart seçilmeden rezerve olmasın
+                    Label dateText = new Label("Tarih: " + trip.getDepartureTime());
+                    Label timeText = new Label("Saat: " + trip.getTime());
+                    dateText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+                    timeText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+                    dateText.setTextFill(Color.BLACK);
+                    timeText.setTextFill(Color.BLACK);
 
-        if (trips.isEmpty()) {
-            Label noResult = new Label("Uygun sefer bulunamadı.");
-            noResult.setTextFill(Color.WHITE);
-            noResult.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-            tripListBox.getChildren().add(noResult);
-        } else {
-            for (Trip trip : trips) {
-                Label cityLabel = new Label(trip.getOrigin() + " → " + trip.getDestination());
-                cityLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-                cityLabel.setTextFill(Color.web("#3b5998"));
+                    HBox infoRow = new HBox(20, dateText, timeText);
+                    infoRow.setAlignment(Pos.CENTER_LEFT);
 
-                Label dateText = new Label("Tarih: " + trip.getDepartureTime());
-                Label timeText = new Label("Saat: " + trip.getTime());
-                dateText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                timeText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                dateText.setTextFill(Color.BLACK);
-                timeText.setTextFill(Color.BLACK);
+                    VBox card = new VBox(8, cityLabel, infoRow);
+                    card.setPadding(new Insets(12));
+                    card.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
+                    card.setBorder(null);
+                    card.setCursor(javafx.scene.Cursor.HAND);
 
-                HBox infoRow = new HBox(20, dateText, timeText);
-                infoRow.setAlignment(Pos.CENTER_LEFT);
+                    // TIKLANABİLİR YAPI!
+                    card.setOnMouseClicked(e -> view.setSelectedTrip(trip, card));
 
-                VBox card = new VBox(8, cityLabel, infoRow);
-                card.setPadding(new Insets(12));
-                card.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(12), Insets.EMPTY)));
-                card.setBorder(null);
-                card.setCursor(javafx.scene.Cursor.HAND);
-
-                // TIKLANABİLİR YAPI!
-                card.setOnMouseClicked(e -> view.setSelectedTrip(trip, card));
-
-                tripListBox.getChildren().add(card);
+                    tripListBox.getChildren().add(card);
+                }
             }
         }
+
+
     }
+
+
+
 
     // Rezervasyon işlemi
     public void handleReservation() {
@@ -113,6 +121,7 @@ public class ReservationController {
             alert.showAndWait();
             return;
         }
+
         // İstediğin işlemi burada yapabilirsin (veritabanına kayıt vs.)
         if (view.seatLayout.selectedSeats.isEmpty()){
             view.showAlert("Koltuk Seçmediniz");
@@ -120,7 +129,7 @@ public class ReservationController {
             if (view.seatLayout.controller.manager.insertSeatsByTrip(view.seatLayout.selectedSeats)){
                 if(view.seatLayout.secilenKoltuklar.size() != 0){
 
-                    List<Seat> seatList = seatManager.getSeatByTripAndUserID(selected.getTripID(),user.getId());
+                    List<Seat> seatList = view.seatLayout.selectedSeats;
                     for (int i = 0; i < seatList.size(); i++) {
                         Seat seat = seatList.get(i);
                         Reservation reservation = new Reservation();
@@ -153,10 +162,7 @@ public class ReservationController {
 
     }
 
-    public void handleCancelReservation() {
-
-    }
-
+    //rezervasyonları listeleme için kullanılıyor.
     public void handleListReservation(UserModel user) {
         List<Reservation> reservationList = reservationManager.getReservations(user.getId());
 
@@ -188,6 +194,7 @@ public class ReservationController {
         listReservationStage.show();
     }
 
+    //liste içindeki her bir card bu metodla oluşturuluyor
     private VBox createReservationCard(Reservation reservation) {
         VBox card = new VBox(10); // spacing arttırıldı
         card.setPadding(new Insets(16));
@@ -236,7 +243,13 @@ public class ReservationController {
             double deltaX = card.getTranslateX();
             if (deltaX < -120) {
                 ((VBox) card.getParent()).getChildren().remove(card);
-                if (reservationManager.cancelReservation(reservation)) {
+                List<Seat> toUpdatedSeat= new ArrayList<>();
+                Seat seat = reservation.getSeat();
+                seat.setReserved(false);
+                seat.setTripID(null);
+                seat.setUserID(null);
+                toUpdatedSeat.add(seat);
+                if (reservationManager.cancelReservation(reservation) && seatManager.insertSeatsByTrip(toUpdatedSeat)) {
                     System.out.println("silindiiiiiiiiiiii");
                 }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -252,6 +265,24 @@ public class ReservationController {
         return card;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void showInfo(String text) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         alert.setTitle("Tüm reservasyonlar");
@@ -260,18 +291,19 @@ public class ReservationController {
         alert.showAndWait();
     }
 
+    //çıkış işlemi burda yapılıyor.
     public void handleLogout() {
         user = null;
         Stage currentStage = (Stage) view.logoutButton.getScene().getWindow();
         currentStage.close();
     }
 
+    //uçak ve otobüs arasındaki seçimle bu iki metodda ele alınıyor
     public void handleBusSelected(){
         view.setBus(true);
         view.busButton.setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
         view.planeButton.setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");
     }
-
     public void handlePlaneSelected(){
         view.planeButton.setStyle("-fx-background-radius: 10; -fx-background-color: #ffffff; -fx-text-fill: #8b0033;");
         view.busButton.setStyle("-fx-background-radius: 10; -fx-background-color: #eeeeee; -fx-text-fill: #555555;");

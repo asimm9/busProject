@@ -46,7 +46,7 @@ public class TripDAO {
     }
 
     //dbden tüm tripleri getirir
-    public List<Trip> getAllTrips() {
+    public List<Trip> getAllTrips(VehicleType vehicleType) {
         String sql = "SELECT * FROM trips";
         List<Trip> trips = new ArrayList<>();
         try (Connection conn = DatabaseConnector.connect(); PreparedStatement stmt = conn.prepareStatement(sql) ) {
@@ -66,7 +66,7 @@ public class TripDAO {
                 trip.setOrigin(origin);
                 trip.setDestination(destination);
                 trip.setDepartureTime(departureTime);
-                Vehicle vehicle = vehicleDAO.getVehicle(busId, VehicleType.Bus);
+                Vehicle vehicle = vehicleDAO.getVehicle(busId, vehicleType);
                 trip.setVehicle(vehicle);
                 trip.setTime(time);
                 trips.add(trip);
@@ -142,6 +142,34 @@ public class TripDAO {
             e.printStackTrace();
         }
         return trips;
+    }
+
+
+    public Trip getTripByBusId(String busId, VehicleType vehicleType) {
+        String sql = "SELECT * FROM trips WHERE vehicle_id = ?";
+        Trip trip = null;
+        try(Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
+
+            stmt.setString(1, busId);
+            ResultSet rs = stmt.executeQuery();
+            VehicleDAO vehicleDAO = new VehicleDAO();
+            if (rs.next()) {
+                trip = new Trip();
+                trip.setTripID(rs.getString("trip_id"));
+                trip.setOrigin(rs.getString("origin"));
+                trip.setDestination(rs.getString("destination"));
+                trip.setDepartureTime(rs.getString("departure_time"));
+                trip.setTime(rs.getString("time"));
+                String vehicleId = rs.getString("vehicle_id");
+
+                trip.setVehicle(vehicleDAO.getVehicle(vehicleId,vehicleType));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return trip;
     }
 
 }
