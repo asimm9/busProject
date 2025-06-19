@@ -1,15 +1,19 @@
 package com.example.databaseTest;
 
+import org.example.helper.DatabaseInitializer;
 import org.example.managers.SeatManager;
 import org.example.models.Seat;
+import org.example.models.interfaces.EconomyClass;
+import org.example.models.interfaces.SeatClassStrategy;
 import org.junit.jupiter.api.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 public class SeatTest {
 
     private static SeatManager seatManager;
@@ -17,60 +21,97 @@ public class SeatTest {
     @BeforeAll
     static void setup() {
         seatManager = SeatManager.getInstance();
-        // Burada istersen test DB'yi başlatabilir veya mock nesneler kullanılabilir
+        DatabaseInitializer.initialize();
+    }
+    @Test
+    public void insertSeatsByTripTest() {
+
+        List<Seat> seatList = new ArrayList<>();
+        Seat seat = new Seat();
+        seat.setReserved(false);
+        seat.setSeatClass(new EconomyClass());
+        seat.setTripID("test trip");
+        seat.setUserID("test User");
+        seat.setRow(1);
+        seat.setColumn(1);
+        seat.setVehicleID("test Vehicle");
+        seat.setSeatID("test Seat");
+
+        seatList.add(seat);
+
+        assertTrue(seatManager.insertSeatsByTrip(seatList));
+
     }
 
     @Test
-    @Order(1)
-    void testSeatBuilderAndGetters() {
-        Seat seat = new Seat.Builder()
-                .seatID("S1")
-                .vehicleID("V1")
-                .tripID("T1")
-                .userID("U1")
-                .row(3)
-                .column(4)
-                .build();
-        seat.setReserved(true);
+    public void insertSeatByBus() {
 
-        assertEquals("S1", seat.getSeatID());
-        assertEquals("V1", seat.getVehicleID());
-        assertEquals("T1", seat.getTripID());
-        assertEquals("U1", seat.getUserID());
-        assertEquals(3, seat.getRow());
-        assertEquals(4, seat.getColumn());
-        assertTrue(seat.isReserved());
+        Seat[][] seats = new Seat[1][1];
+        seats[0][0] = new Seat();
+        seats[0][0].setReserved(true);
+        seats[0][0].setSeatClass(new EconomyClass());
+        seats[0][0].setTripID("test trip");
+        seats[0][0].setUserID("test User");
+        seats[0][0].setRow(1);
+        seats[0][0].setColumn(1);
+        seats[0][0].setVehicleID("test Vehicle");
+        seats[0][0].setSeatID("test Seat");
+
+        assertTrue(seatManager.insertSeatByBus(seats));
     }
 
     @Test
-    @Order(2)
-    void testSeatEqualsAndHashCode() {
-        Seat seat1 = new Seat.Builder()
-                .seatID("S2")
-                .vehicleID("V1")
-                .tripID("T2")
-                .userID("U2")
-                .row(1)
-                .column(1)
-                .build();
-        seat1.setReserved(false);
+    public void getSeatByTripAndUserID() {
 
-        Seat seat2 = new Seat.Builder()
-                .seatID("S2")
-                .vehicleID("V1")
-                .tripID("T2")
-                .userID("U2")
-                .row(1)
-                .column(1)
-                .build();
-        seat2.setReserved(false);
+        List<Seat> expectedSeatList = new ArrayList<>();
+        Seat seat = new Seat();
+        seat.setReserved(false);
+        seat.setSeatClass(new EconomyClass());
+        seat.setTripID("test trip");
+        seat.setUserID("test User");
+        seat.setRow(1);
+        seat.setColumn(1);
+        seat.setVehicleID("test Vehicle");
+        seat.setSeatID("test Seat");
+        expectedSeatList.add(seat);
 
-        assertEquals(seat1, seat2);
-        assertEquals(seat1.hashCode(), seat2.hashCode());
+        List<Seat> actualSeats = seatManager.getSeatByTripAndUserID("test trip");
 
-        seat2.setReserved(true);
-        assertNotEquals(seat1, seat2);
+        assertNotNull(actualSeats);
+        assertEquals(expectedSeatList.size(), actualSeats.size());
     }
+
+    @Test
+    public void getSeatByTripandUserId() {
+
+        List<Seat> expectedSeatList = new ArrayList<>();
+        Seat seat = new Seat();
+        seat.setReserved(false);
+        seat.setSeatClass(new EconomyClass());
+        seat.setTripID("test trip");
+        seat.setUserID("test User");
+        seat.setRow(1);
+        seat.setColumn(1);
+        seat.setVehicleID("test Vehicle");
+        seat.setSeatID("test Seat");
+        expectedSeatList.add(seat);
+
+
+        List<Seat> actualSeats = seatManager.getSeatByTripandUserId("test trip", "test User");
+
+        assertNotNull(actualSeats);
+        assertEquals(expectedSeatList.size(), actualSeats.size());
+
+    }
+
+    @Test
+    public void deleteByVehicleId() {
+
+        assertTrue(seatManager.deleteByVehicleId("test Vehicle"));
+    }
+
+
+
 
 
 

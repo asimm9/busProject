@@ -160,7 +160,7 @@ public class SeatDAO {
     }
 
     public List<Seat> getSeatByTripAndUserID(String tripID, String userID) {
-        String sql = "SELECT * FROM seats WHERE trip_id = ?, user_id = ?";
+        String sql = "SELECT * FROM seats WHERE trip_id = ? AND user_id = ?";
         List<Seat> seatList = new ArrayList<>();
         try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, tripID);
