@@ -34,7 +34,7 @@ public class TripManager {
     public List<Trip> getAllTrips(VehicleType vehicleType){return tripDAO.getAllTrips(vehicleType);}
 
     //ID'ye göre databaseden tek bir trip nesnesini çeker.
-    public Trip getTripById(String id){return tripDAO.getTrip(id);}
+    public Trip getTripById(String id,VehicleType vehicleType){return tripDAO.getTrip(id,vehicleType);}
 
     //nerden nereye filtrelerken bu metod kullanılır ve ona ggöre seferler listelenir.
     public List<Trip> getTripByFilteredParameters(String from, String to,String departureTime, VehicleType vehicleType){

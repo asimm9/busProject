@@ -164,7 +164,9 @@ public class ReservationController {
 
     //rezervasyonları listeleme için kullanılıyor.
     public void handleListReservation(UserModel user) {
-        List<Reservation> reservationList = reservationManager.getReservations(user.getId());
+        VehicleType vehicleType;
+        vehicleType = view.isBus() == true ?  VehicleType.Bus : VehicleType.Plane;
+        List<Reservation> reservationList = reservationManager.getReservations(user.getId(),vehicleType);
 
         if (reservationList == null || reservationList.isEmpty()) {
             showInfo("Hiç bir rezervasyon bulunamadı.");
@@ -223,7 +225,12 @@ public class ReservationController {
         timeLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
         timeLabel.setTextFill(Color.web("#444444"));
 
-        card.getChildren().addAll(tripLabel, seatLabel, dateLabel, timeLabel);
+        Label seatType = new Label("Sınıfınız: "+ reservation.getSeat().getSeatClass().getClassName() + "  Ücret: "
+                + reservation.getSeat().getSeatClass().getPrice(reservation.getTrip().getVehicle().getPrice()) + " TL" );
+        seatType.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        seatType.setTextFill(Color.web("#444444"));
+
+        card.getChildren().addAll(tripLabel, seatLabel, dateLabel, timeLabel, seatType);
 
         // Sürükleme işlemleri
         final double[] mouseAnchorX = new double[1];
@@ -264,16 +271,6 @@ public class ReservationController {
 
         return card;
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

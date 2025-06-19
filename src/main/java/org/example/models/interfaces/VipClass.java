@@ -5,4 +5,11 @@ public class VipClass implements SeatClassStrategy{
     public String getClassName() {
         return "VIP";
     }
+
+    @Override
+    public double getPrice(int defaultPrice) {
+        return defaultPrice * 2;
+    }
+
+
 }

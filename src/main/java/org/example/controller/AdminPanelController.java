@@ -342,7 +342,7 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<3){
+                            if (i<4){
                                 seat.setSeatClass(new VipClass());
                             }else{
                                 seat.setSeatClass(new EconomyClass());
@@ -362,7 +362,7 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<3){
+                            if (i<4){
                                 seat.setSeatClass(new VipClass());
                             }else{
                                 seat.setSeatClass(new EconomyClass());
@@ -384,7 +384,7 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<3){
+                            if (i<4){
                                 seat.setSeatClass(new VipClass());
                             }else{
                                 seat.setSeatClass(new EconomyClass());
@@ -404,7 +404,7 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<3){
+                            if (i<4){
                                 seat.setSeatClass(new VipClass());
                             }else{
                                 seat.setSeatClass(new EconomyClass());

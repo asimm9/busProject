@@ -170,7 +170,11 @@ public class SeatLayout {
             button.setStyle("-fx-background-color: red;");
             button.setDisable(true);
         } else {
-            button.setStyle("-fx-background-color: transparent;");
+            if (seat.getSeatClass().getClassName().equals("VIP")){
+                button.setStyle("-fx-background-color: yellow;");
+            }else if (seat.getSeatClass().getClassName().equals("Economy")){
+                button.setStyle("-fx-background-color: blue;");
+            }
             ayarlaSecimDavranisi(button, seat);
         }
 
@@ -186,7 +190,7 @@ public class SeatLayout {
         seat.setRow(row);
         seat.setColumn(column);
         seat.setReserved(isReserved);
-        if (row<3){
+        if (row<5){
             seat.setSeatClass(new VipClass());
         }else {
             seat.setSeatClass(new EconomyClass());

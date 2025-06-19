@@ -2,6 +2,7 @@ package org.example.managers;
 
 import org.example.helper.dao.ReservationDAO;
 import org.example.models.Reservation;
+import org.example.models.VehicleType;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ReservationManager {
         return reservationDAO.getReservationById(userId);
     }
 
-    public List<Reservation> getReservations(String userId) {
-        return reservationDAO.getReservationsByUserId(userId);
+    public List<Reservation> getReservations(String userId, VehicleType vehicleType) {
+        return reservationDAO.getReservationsByUserId(userId,vehicleType);
     }
 }

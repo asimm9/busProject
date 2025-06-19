@@ -79,7 +79,7 @@ public class TripDAO {
     }
 
     //id ye göre dbden trip getirmek için kullanılır
-    public Trip getTrip(String tripID) {
+    public Trip getTrip(String tripID, VehicleType vehicleType) {
         String sql = "SELECT * FROM trips WHERE trip_id = ?";
             Trip trip = null;
             try (Connection connection = DatabaseConnector.connect(); PreparedStatement stmt = connection.prepareStatement(sql) ) {
@@ -94,7 +94,7 @@ public class TripDAO {
                     trip.setDepartureTime(rs.getString("departure_time"));
                     trip.setTime(rs.getString("time"));
                     String vehicleId = rs.getString("vehicle_id");
-                    trip.setVehicle(vehicleDAO.getVehicle(vehicleId,VehicleType.Plane));
+                    trip.setVehicle(vehicleDAO.getVehicle(vehicleId,vehicleType));
                 }
                 return trip;
             } catch (SQLException e) {

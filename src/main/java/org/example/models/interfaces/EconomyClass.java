@@ -5,4 +5,10 @@ public class EconomyClass implements SeatClassStrategy{
     public String getClassName() {
         return "Economy";
     }
+
+    @Override
+    public double getPrice(int defaultPrice) {
+        return  defaultPrice * 1;
+    }
+
 }

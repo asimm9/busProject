@@ -1,8 +1,11 @@
 package org.example.helper.dao;
 import org.example.helper.DatabaseConnector;
+import org.example.managers.TripManager;
 import org.example.models.Reservation;
 import org.example.models.Trip;
 import org.example.models.UserModel;
+import org.example.models.VehicleType;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -80,7 +83,7 @@ public class ReservationDAO {
     }
 
     // 4) dbden user idye göre o userın rezervasyonlarını listeler
-    public List<Reservation> getReservationsByUserId(String userId) {
+    public List<Reservation> getReservationsByUserId(String userId, VehicleType vehicleType) {
         List<Reservation> list = new ArrayList<>();
         // Sorguyu sadece bu userId’ye ait rezervasyonları almak üzere değiştiriyoruz
         String sql = "SELECT * FROM reservations WHERE user_id = ?";
@@ -103,7 +106,10 @@ public class ReservationDAO {
                 reservation.setUser(user);
 
                 // Trip nesnesini TripDAO’dan çekiyoruz
-                reservation.setTrip(new TripDAO().getTrip(rs.getString("trip_id")));
+                TripDAO tripDAO = new TripDAO();
+                Trip trip1;
+                trip1 = tripDAO.getTrip(rs.getString("trip_id"),vehicleType);
+                reservation.setTrip(trip1);
 
                 // Seat nesnesini SeatDAO’dan çekiyoruz
                 reservation.setSeat(SeatDAO.getSeatById(rs.getInt("seat_id")));
@@ -112,6 +118,7 @@ public class ReservationDAO {
                 reservation.setReservationDateTime(
                         LocalDateTime.parse(rs.getString("reservation_time"))
                 );
+
 
                 list.add(reservation);
             }
