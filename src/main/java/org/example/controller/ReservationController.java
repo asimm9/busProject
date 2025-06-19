@@ -19,6 +19,8 @@ import org.example.managers.ReservationManager;
 import org.example.managers.SeatManager;
 import org.example.managers.TripManager;
 import org.example.models.*;
+import org.example.models.interfaces.EconomyClass;
+import org.example.models.interfaces.VipClass;
 import org.example.views.SeatLayout;
 import org.example.views.UserDashboard;
 
@@ -126,8 +128,19 @@ public class ReservationController {
         if (view.seatLayout.selectedSeats.isEmpty()){
             view.showAlert("Koltuk Seçmediniz");
         }else {
+            for (int i = 0; i< view.seatLayout.selectedSeats.size(); i++){
+                if (Integer.parseInt(view.seatLayout.selectedSeats.get(i).getSeatID()) <= 10){
+                    view.seatLayout.selectedSeats.get(i).setSeatClass(new EconomyClass());
+                }else {
+                    view.seatLayout.selectedSeats.get(i).setSeatClass(new VipClass());
+                }
+
+            }
             if (view.seatLayout.controller.manager.insertSeatsByTrip(view.seatLayout.selectedSeats)){
                 if(view.seatLayout.secilenKoltuklar.size() != 0){
+
+
+
 
                     List<Seat> seatList = view.seatLayout.selectedSeats;
                     for (int i = 0; i < seatList.size(); i++) {
@@ -183,8 +196,12 @@ public class ReservationController {
         cardBox.setStyle("-fx-background-color: linear-gradient(to bottom, #f0f2f5, #e9eaf2);");
 
         for (Reservation reservation : reservationList) {
-            VBox card = createReservationCard(reservation);
-            cardBox.getChildren().add(card);
+            if (reservation.getTrip().getVehicle() != null) {
+                VBox card = createReservationCard(reservation);
+                cardBox.getChildren().add(card);
+            }else {
+                continue;
+            }
         }
 
         ScrollPane scrollPane = new ScrollPane(cardBox);
@@ -224,6 +241,7 @@ public class ReservationController {
         Label timeLabel = new Label("Saat: " + reservation.getTrip().getTime());
         timeLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
         timeLabel.setTextFill(Color.web("#444444"));
+
 
         Label seatType = new Label("Sınıfınız: "+ reservation.getSeat().getSeatClass().getClassName() + "  Ücret: "
                 + reservation.getSeat().getSeatClass().getPrice(reservation.getTrip().getVehicle().getPrice()) + " TL" );

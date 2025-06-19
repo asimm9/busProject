@@ -116,7 +116,6 @@ public class SeatDAO {
                     stmt.setString(5,  s.getUserID());
                     stmt.setString(6, s.getTripID());
                     stmt.setString(7, s.getVehicleID());
-                    stmt.setString(8, s.getSeatClass().getClassName());
                     stmt.addBatch();
                 }
             }

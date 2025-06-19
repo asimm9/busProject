@@ -342,11 +342,6 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<4){
-                                seat.setSeatClass(new VipClass());
-                            }else{
-                                seat.setSeatClass(new EconomyClass());
-                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -362,11 +357,6 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<4){
-                                seat.setSeatClass(new VipClass());
-                            }else{
-                                seat.setSeatClass(new EconomyClass());
-                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -384,11 +374,6 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<4){
-                                seat.setSeatClass(new VipClass());
-                            }else{
-                                seat.setSeatClass(new EconomyClass());
-                            }
                             seats[i][j] = seat;
                         }
                     }
@@ -404,11 +389,6 @@ public class AdminPanelController {
                             seat.setUserID(null);
                             seat.setTripID(null);
                             seat.setVehicleID(id);
-                            if (i<4){
-                                seat.setSeatClass(new VipClass());
-                            }else{
-                                seat.setSeatClass(new EconomyClass());
-                            }
                             seats[i][j] = seat;
                         }
                     }

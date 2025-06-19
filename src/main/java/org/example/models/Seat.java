@@ -13,6 +13,7 @@ public class Seat {
     private int row;
     private boolean isReserved;
 
+
     public SeatClassStrategy getSeatClass() {
         return seatClass;
     }
@@ -22,6 +23,7 @@ public class Seat {
     }
 
     private SeatClassStrategy seatClass;
+
 
 
     @Override
